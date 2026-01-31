@@ -2,6 +2,7 @@ package com.leonardower.mymovie.ui.components.tiles.genre
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,17 +22,18 @@ import com.leonardower.mymovie.ui.theme.GrayButton
 fun GenreTile(
     genre: Genre,
     modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
     cardSize: Dp = 50.dp,
-    onClick: () -> Unit = {}
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(cardSize),
+            .height(cardSize)
+            .clickable(onClick = onClick),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
-            modifier = modifier
+            modifier = Modifier
                 .height(cardSize)
                 .width(cardSize)
                 .background(GrayButton)
@@ -54,7 +56,7 @@ fun GenreTile(
     }
 }
 
-@Preview
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
 private fun GenreTilePreview() {
     GenreTile(

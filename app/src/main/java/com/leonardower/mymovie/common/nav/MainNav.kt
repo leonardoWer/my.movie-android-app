@@ -8,9 +8,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.leonardower.mymovie.ui.screens.home.HomeScreen
+import com.leonardower.mymovie.ui.screens.search.SearchScreen
 
 @Composable
-fun MainNavigation(
+fun MainNav(
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
@@ -20,26 +21,12 @@ fun MainNavigation(
         modifier = modifier
     ) {
         composable(Screen.Home.route) {
-            HomeScreen(
-                onFilmClick = { filmId ->
-                    // TODO: Позже добавим экран деталей фильма
-                },
-                onGenreClick = { genreId ->
-                    navController.navigate(Screen.GenreDetail.createRoute(genreId))
-                }
-            )
+            HomeScreen()
         }
 
-//        composable(Screen.Search.route) {
-//            SearchScreen(
-//                onGenreClick = { genreId ->
-//                    navController.navigate(Screen.GenreDetail.createRoute(genreId))
-//                },
-//                onSearch = { query ->
-//                    // Позже добавим поиск
-//                }
-//            )
-//        }
+        composable(Screen.Search.route) {
+            SearchScreen()
+        }
 //
 //        composable(
 //            route = Screen.GenreDetail.route,
@@ -57,7 +44,6 @@ fun MainNavigation(
     }
 }
 
-// Screen.kt
 sealed class Screen(val route: String) {
     object Home : Screen("home")
     object Search : Screen("search")

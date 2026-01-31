@@ -1,4 +1,4 @@
-package com.leonardower.mymovie.ui.screens.home
+package com.leonardower.mymovie.ui.screens.home.vm
 
 import com.leonardower.mymovie.domain.repo.FilmRepository
 import com.leonardower.mymovie.domain.repo.GenreRepository

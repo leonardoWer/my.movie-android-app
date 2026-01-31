@@ -5,89 +5,87 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.leonardower.mymovie.domain.model.Film
-import com.leonardower.mymovie.domain.model.Genre
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.leonardower.mymovie.R
+import com.leonardower.mymovie.domain.repo.MockFilmRepository
+import com.leonardower.mymovie.domain.repo.MockGenreRepository
 import com.leonardower.mymovie.ui.components.list.FilmList
 import com.leonardower.mymovie.ui.components.tiles.film.FilmTile
 import com.leonardower.mymovie.ui.components.tiles.film.FilmTileSize
 import com.leonardower.mymovie.ui.components.tiles.genre.GenreChip
+import com.leonardower.mymovie.ui.screens.home.vm.HomeUiState
+import com.leonardower.mymovie.ui.screens.home.vm.HomeVM
+import com.leonardower.mymovie.ui.screens.home.vm.provideHomeVMFactory
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    watchLaterFilms: List<Film> = emptyList(),
-    allGenres: List<Genre> = emptyList(),
-    filmsByGenre: Map<Genre, List<Film>> = emptyMap(),
+    viewModel: HomeVM = viewModel(
+        factory = provideHomeVMFactory(
+            MockFilmRepository(),
+            MockGenreRepository()
+        )
+    )
+) {
+    // Подписываемся на StateFlow из ViewModel
+    val uiState by viewModel.uiState.collectAsState()
+
+    HomeScreenContent(
+        modifier = modifier,
+        uiState = uiState,
+        onFilmClick = viewModel::onFilmClick,
+        onGenreClick = viewModel::onGenreClick
+    )
+}
+
+@Composable
+fun HomeScreenContent(
+    modifier: Modifier = Modifier,
+    uiState: HomeUiState,
     onFilmClick: (Long) -> Unit = {},
     onGenreClick: (Long) -> Unit = {},
-) {
-    Column (
+
+    ) {
+    Column(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
     ) {
-        // Секция "Буду смотреть"
-        if (watchLaterFilms.isNotEmpty()) {
-            FilmList(
-                title = "Буду смотреть",
-                modifier = modifier,
-                content = {
-                    LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        contentPadding = PaddingValues(horizontal = 16.dp)
-                    ) {
-                        items(watchLaterFilms) { film ->
-                            FilmTile(
-                                film = film,
-                                size = FilmTileSize.Medium,
-                                onClick = { onFilmClick(film.id) }
-                            )
-                        }
-                    }
-                }
-            )
-        }
+        Text(
+            text = stringResource(R.string.app_name),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
 
-        // Секция "Жанры"
-        if (allGenres.isNotEmpty()) {
-            FilmList(
-                title = "Жанры",
-                content = {
-                    LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        contentPadding = PaddingValues(horizontal = 16.dp)
-                    ) {
-                        items(allGenres) { genre ->
-                            GenreChip(
-                                genre = genre,
-                                onClick = { onGenreClick(genre.id) }
-                            )
-                        }
-                    }
-                }
-            )
-        }
+        if (uiState.isLoading) {
+            // TODO: Можно добавить LoadingIndicator
+        } else {
 
-        // Секции по жанрам
-        filmsByGenre.forEach { (genre, films) ->
-            if (films.isNotEmpty()) {
+            // Секция "Буду смотреть"
+            if (uiState.watchLaterFilms.isNotEmpty()) {
                 FilmList(
-                    title = genre.name,
+                    title = "Буду смотреть",
                     content = {
                         LazyRow(
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
                             contentPadding = PaddingValues(horizontal = 16.dp)
                         ) {
-                            items(films) { film ->
+                            items(uiState.watchLaterFilms) { film ->
                                 FilmTile(
                                     film = film,
                                     size = FilmTileSize.Medium,
@@ -97,6 +95,49 @@ fun HomeScreen(
                         }
                     }
                 )
+            }
+
+            // Секция "Жанры"
+            if (uiState.allGenres.isNotEmpty()) {
+                FilmList(
+                    title = "Жанры",
+                    content = {
+                        LazyRow(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            contentPadding = PaddingValues(horizontal = 16.dp)
+                        ) {
+                            items(uiState.allGenres) { genre ->
+                                GenreChip(
+                                    genre = genre,
+                                    onClick = { onGenreClick(genre.id) }
+                                )
+                            }
+                        }
+                    }
+                )
+            }
+
+            // Секции по жанрам
+            uiState.filmsByGenre.forEach { (genre, films) ->
+                if (films.isNotEmpty()) {
+                    FilmList(
+                        title = genre.name,
+                        content = {
+                            LazyRow(
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                contentPadding = PaddingValues(horizontal = 16.dp)
+                            ) {
+                                items(films) { film ->
+                                    FilmTile(
+                                        film = film,
+                                        size = FilmTileSize.Medium,
+                                        onClick = { onFilmClick(film.id) }
+                                    )
+                                }
+                            }
+                        }
+                    )
+                }
             }
         }
     }
