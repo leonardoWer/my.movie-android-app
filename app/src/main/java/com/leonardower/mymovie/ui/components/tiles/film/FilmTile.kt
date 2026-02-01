@@ -76,7 +76,7 @@ fun FilmTile(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 4.dp)
+                .padding(vertical = 8.dp, horizontal = 4.dp)
         ) {
             // Название
             Text(
