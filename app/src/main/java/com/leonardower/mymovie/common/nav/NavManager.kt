@@ -31,6 +31,10 @@ class NavigationManager(
         // navController?.navigate(Screen.FilmDetail.createRoute(filmId))
     }
 
+    fun navigateToAddFilm() {
+        navController?.navigate(Screen.AddFilm.route)
+    }
+
     fun navigateBack() {
         navController?.navigateUp()
     }

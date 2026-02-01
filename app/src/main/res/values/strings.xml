@@ -5,6 +5,7 @@
     <string name="search">Поиск</string>
 
     <string name="go_back">Вернуться назад</string>
+    <string name="save">Сохранить</string>
 
     <string name="search_hint">Поиск фильмов, сериалов, анимe…</string>
     <string name="search_results">Результаты поиска</string>
@@ -12,5 +13,11 @@
     <string name="genre">Жанр</string>
     <string name="no_films_in_genre">Нет добавленных фильмов в этом жанре</string>
 
+    <string name="name">Название</string>
+    <string name="poster_url">Url изображения</string>
+    <string name="file">Файл</string>
+    <string name="select_genre">Выберите жанр</string>
+    <string name="remove_genre">Убрать жанр</string>
+    <string name="add_film">Добавить фильм</string>
 
 </resources>

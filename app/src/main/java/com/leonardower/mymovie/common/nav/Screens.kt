@@ -18,4 +18,5 @@ sealed class Screen(val route: String) {
             navArgument("filmId") { type = NavType.LongType }
         )
     }
+    data object AddFilm : Screen("addFilm")
 }

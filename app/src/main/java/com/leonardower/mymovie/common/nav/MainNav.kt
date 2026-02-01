@@ -4,10 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
+import com.leonardower.mymovie.ui.screens.add_film.AddFilmScreen
 import com.leonardower.mymovie.ui.screens.films_in_genre.FilmsInGenreScreen
 import com.leonardower.mymovie.ui.screens.home.HomeScreen
 import com.leonardower.mymovie.ui.screens.search.SearchScreen
@@ -33,7 +32,7 @@ fun MainNav(
         composable(Screen.Search.route) {
             SearchScreen()
         }
-//
+
         composable(
             route = Screen.FilmsInGenre.route,
             arguments = Screen.FilmsInGenre.arguments
@@ -42,6 +41,13 @@ fun MainNav(
             FilmsInGenreScreen(
                 genreId = genreId,
                 onBackClick = { navController.navigateUp() },
+            )
+        }
+
+        composable(Screen.AddFilm.route) {
+            AddFilmScreen(
+                onBackClick = { AppNavigation.manager.navigateBack() },
+                onSaveSuccess = { AppNavigation.manager.navigateToHome() }
             )
         }
     }

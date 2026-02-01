@@ -10,17 +10,24 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.leonardower.mymovie.R
+import com.leonardower.mymovie.common.nav.AppNavigation
 import com.leonardower.mymovie.domain.repo.MockFilmRepository
 import com.leonardower.mymovie.domain.repo.MockGenreRepository
 import com.leonardower.mymovie.ui.components.list.FilmList
@@ -41,15 +48,31 @@ fun HomeScreen(
         )
     )
 ) {
-    // Подписываемся на StateFlow из ViewModel
     val uiState by viewModel.uiState.collectAsState()
 
-    HomeScreenContent(
+    Scaffold(
         modifier = modifier,
-        uiState = uiState,
-        onFilmClick = viewModel::onFilmClick,
-        onGenreClick = viewModel::onGenreClick
-    )
+        floatingActionButton = {
+            FloatingActionButton(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                shape = RectangleShape,
+                onClick = { AppNavigation.manager.navigateToAddFilm() },
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = stringResource(R.string.add_film)
+                )
+            }
+        }
+    ) { paddingValues ->
+        HomeScreenContent(
+            modifier = Modifier.padding(paddingValues),
+            uiState = uiState,
+            onFilmClick = viewModel::onFilmClick,
+            onGenreClick = viewModel::onGenreClick
+        )
+    }
 }
 
 @Composable
