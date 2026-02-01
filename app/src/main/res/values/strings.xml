@@ -20,4 +20,7 @@
     <string name="remove_genre">Убрать жанр</string>
     <string name="add_film">Добавить фильм</string>
 
+    <string name="rate">Оценить</string>
+    <string name="watch_later">Буду смотреть</string>
+
 </resources>

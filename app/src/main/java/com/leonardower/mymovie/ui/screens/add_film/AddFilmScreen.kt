@@ -29,7 +29,6 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -56,12 +55,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.leonardower.mymovie.R
 import com.leonardower.mymovie.ui.components.common.GrayTextField
 import com.leonardower.mymovie.ui.components.common.IconState
+import com.leonardower.mymovie.ui.components.common.RatingButton
+import com.leonardower.mymovie.ui.components.common.WatchLaterButton
 import com.leonardower.mymovie.ui.components.tiles.genre.GenreChip
 import com.leonardower.mymovie.ui.screens.add_film.vm.AddFilmUiState
 import com.leonardower.mymovie.ui.screens.add_film.vm.AddFilmVM
 import com.leonardower.mymovie.ui.screens.add_film.vm.PosterState
 import com.leonardower.mymovie.ui.screens.add_film.vm.provideAddFilmVMFactory
-import com.leonardower.mymovie.ui.theme.DarkBg
 import com.leonardower.mymovie.ui.theme.GrayBg
 import com.leonardower.mymovie.ui.theme.GrayButton
 import com.leonardower.mymovie.ui.theme.LightGray
@@ -99,6 +99,24 @@ fun AddFilmScreen(
                 windowInsets = WindowInsets(0, 0, 0, 0)
             )
         },
+        floatingActionButton = {
+            // Кнопка сохранения
+            Button(
+                modifier = Modifier.width(180.dp),
+                shape = RectangleShape,
+                onClick = { viewModel.onSaveClick(onSaveSuccess) },
+                enabled = uiState.isFormValid && !uiState.isSaving
+            ) {
+                if (uiState.isSaving) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.height(24.dp),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                } else {
+                    Text(stringResource(R.string.save))
+                }
+            }
+        }
     ) { paddingValues ->
         AddFilmContent(
             uiState = uiState,
@@ -107,11 +125,13 @@ fun AddFilmScreen(
             onGenreInputChange = viewModel::onGenreInputChange,
             onGenreSelect = viewModel::onGenreSelect,
             onRemoveGenre = viewModel::onRemoveGenre,
-            onSaveClick = { viewModel.onSaveClick(onSaveSuccess) },
+            onRateClick = viewModel::onRateClick,
+            onWatchLaterClick = viewModel::onWatchLaterClick,
             modifier = Modifier.padding(paddingValues)
         )
     }
 }
+
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -122,14 +142,16 @@ private fun AddFilmContent(
     onGenreInputChange: (String) -> Unit,
     onGenreSelect: (String) -> Unit,
     onRemoveGenre: (String) -> Unit,
-    onSaveClick: () -> Unit,
+    onRateClick: () -> Unit,
+    onWatchLaterClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp)
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         // Название фильма
         GrayTextField(
@@ -142,8 +164,6 @@ private fun AddFilmContent(
             isError = uiState.titleError == null,
             errorMessage = uiState.titleError
         )
-
-        Spacer(modifier = Modifier.height(8.dp))
 
         // Секция для прикрепления картинки (Grid 1x3)
         LazyVerticalGrid(
@@ -210,8 +230,6 @@ private fun AddFilmContent(
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
         // Поле ввода жанра с автодополнением
         GrayTextField(
             modifier = Modifier.fillMaxWidth(),
@@ -224,9 +242,7 @@ private fun AddFilmContent(
         // Подсказки жанров (автодополнение)
         if (uiState.genreSuggestions.isNotEmpty() && uiState.showGenreSuggestions) {
             Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
+                modifier = Modifier.fillMaxWidth(),
                 elevation = CardDefaults.cardElevation(4.dp)
             ) {
                 Column(
@@ -257,11 +273,9 @@ private fun AddFilmContent(
             }
         }
 
-        // Выбранные жанры (чипы)
+        // Выбранные жанры
         FlowRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -284,25 +298,27 @@ private fun AddFilmContent(
             }
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
-        // Кнопка сохранения
-        Button(
+        // Рейтинг и буду смотреть
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
             modifier = Modifier
-                .width(180.dp)
-                .height(42.dp)
-                .align(Alignment.End),
-            shape = RectangleShape,
-            onClick = onSaveClick,
-            enabled = uiState.isFormValid && !uiState.isSaving
+                .height(42.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            if (uiState.isSaving) {
-                CircularProgressIndicator(
-                    modifier = Modifier.height(24.dp),
-                    color = MaterialTheme.colorScheme.onPrimary
+            item {
+                RatingButton(
+                    isRated = uiState.isRated,
+                    rating = uiState.rating,
+                    onClick = { onRateClick() }
                 )
-            } else {
-                Text(stringResource(R.string.save))
+            }
+            item {
+                WatchLaterButton(
+                    isInWatchLater = uiState.isInWatchLater,
+                    onClick = { onWatchLaterClick() }
+                )
             }
         }
     }

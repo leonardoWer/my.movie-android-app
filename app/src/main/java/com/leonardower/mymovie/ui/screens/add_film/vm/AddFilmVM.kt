@@ -149,6 +149,23 @@ class AddFilmVM(
         }
     }
 
+    fun onRateClick() {
+        // TODO: Открыть диалог оценки
+        // Меняем состояние
+        _uiState.update { state ->
+            state.copy(
+                isRated = !state.isRated,
+                rating = if (!state.isRated) 8 else null // Пример оценки
+            )
+        }
+    }
+
+    fun onWatchLaterClick() {
+        _uiState.update { state ->
+            state.copy(isInWatchLater = !state.isInWatchLater)
+        }
+    }
+
     fun onSaveClick(onSuccess: () -> Unit) {
         viewModelScope.launch {
             _uiState.update { it.copy(isSaving = true) }
@@ -211,6 +228,9 @@ data class AddFilmUiState(
     val selectedGenres: List<String> = emptyList(),
     val genreSuggestions: List<String> = emptyList(),
     val showGenreSuggestions: Boolean = false,
+    val isRated: Boolean = false,
+    val rating: Int? = null,
+    val isInWatchLater: Boolean = false,
     val titleError: String? = null,
     val genresError: String? = null,
     val isFormValid: Boolean = false,
