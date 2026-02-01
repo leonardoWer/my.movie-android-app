@@ -29,7 +29,7 @@ fun GenreTile(
         modifier = modifier
             .fillMaxWidth()
             .height(cardSize)
-            .clickable(onClick = onClick),
+            .clickable {onClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(

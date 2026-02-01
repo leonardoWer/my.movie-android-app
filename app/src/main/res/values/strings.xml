@@ -4,8 +4,13 @@
     <string name="home">Главная</string>
     <string name="search">Поиск</string>
 
+    <string name="go_back">Вернуться назад</string>
+
     <string name="search_hint">Поиск фильмов, сериалов, анимe…</string>
     <string name="search_results">Результаты поиска</string>
     <string name="genres">Жанры</string>
+    <string name="genre">Жанр</string>
+    <string name="no_films_in_genre">Нет добавленных фильмов в этом жанре</string>
+
 
 </resources>

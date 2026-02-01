@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -73,7 +74,7 @@ fun HomeScreenContent(
         )
 
         if (uiState.isLoading) {
-            // TODO: Можно добавить LoadingIndicator
+            CircularProgressIndicator()
         } else {
 
             // Секция "Буду смотреть"

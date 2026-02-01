@@ -19,6 +19,11 @@ val Typography = Typography(
         fontWeight = FontWeight.ExtraBold,
         fontSize = 36.sp,
     ),
+    displayLarge = TextStyle(
+        fontFamily = OpenSansFontFamily,
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = 24.sp,
+    ),
     titleMedium = TextStyle(
         fontFamily = OpenSansFontFamily,
         fontWeight = FontWeight.Bold,

@@ -2,7 +2,7 @@ package com.leonardower.mymovie.ui.screens.search.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.leonardower.mymovie.domain.model.Film
+import com.leonardower.mymovie.common.nav.AppNavigation
 import com.leonardower.mymovie.domain.model.Genre
 import com.leonardower.mymovie.domain.repo.FilmRepository
 import com.leonardower.mymovie.domain.repo.GenreRepository
@@ -65,11 +65,11 @@ class SearchVM(
     }
 
     fun onFilmClick(filmId: Long) {
-        // Открыть детали фильма
+        AppNavigation.manager.navigateToFilmDetail(filmId)
     }
 
     fun onGenreClick(genreId: Long) {
-        // Открыть страницу жанра
+        AppNavigation.manager.navigateToFilmsInGenre(genreId)
     }
 }
 

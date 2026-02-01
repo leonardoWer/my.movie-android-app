@@ -2,6 +2,7 @@ package com.leonardower.mymovie.ui.screens.home.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.leonardower.mymovie.common.nav.AppNavigation
 import com.leonardower.mymovie.domain.model.Film
 import com.leonardower.mymovie.domain.model.Genre
 import com.leonardower.mymovie.domain.repo.FilmRepository
@@ -58,11 +59,11 @@ class HomeVM(
     }
 
     fun onFilmClick(filmId: Long) {
-        // TODO: открыть детали фильма
+        AppNavigation.manager.navigateToFilmDetail(filmId)
     }
 
     fun onGenreClick(genreId: Long) {
-        // TODO: Можно открыть страницу жанра
+        AppNavigation.manager.navigateToFilmsInGenre(genreId)
     }
 }
 

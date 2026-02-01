@@ -1,6 +1,7 @@
 package com.leonardower.mymovie.ui.components.tiles.genre
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -24,7 +25,8 @@ fun GenreChip(
         modifier = modifier
             .wrapContentSize()
             .background(GrayBg)
-            .padding(horizontal = 25.dp, vertical = 8.dp),
+            .padding(horizontal = 25.dp, vertical = 8.dp)
+            .clickable { onClick() },
     ) {
         Text(
             text = genre.name,
