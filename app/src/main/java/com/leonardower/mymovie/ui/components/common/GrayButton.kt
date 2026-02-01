@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,14 +33,13 @@ fun GrayButton(
     activeBackgroundColor: Color = GrayButtonColor,
     enabled: Boolean = true,
     height: Dp = 42.dp,
-    contentPadding: PaddingValues = PaddingValues(start = 12.dp)
+    contentPadding: PaddingValues = PaddingValues(horizontal = 12.dp)
 ) {
     val currentIconTint = if (isActive && enabled) activeIconTint else iconTint
     val currentBackgroundColor = if (isActive && enabled) activeBackgroundColor else backgroundColor
 
     Button(
         modifier = modifier
-            .fillMaxWidth()
             .height(height),
         contentPadding = contentPadding,
         shape = RectangleShape,
@@ -53,7 +53,7 @@ fun GrayButton(
         )
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = modifier,
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -74,7 +74,8 @@ fun GrayButton(
                 )
             }
 
-            Spacer(modifier = Modifier.width(8.dp))
+            if (iconResourceId != null || icon != null)
+                Spacer(modifier = Modifier.width(8.dp))
 
             Text(
                 text = text,
@@ -85,4 +86,13 @@ fun GrayButton(
             )
         }
     }
+}
+
+@Preview
+@Composable
+private fun Preview() {
+    GrayButton(
+        text = "example",
+        onClick = {}
+    )
 }

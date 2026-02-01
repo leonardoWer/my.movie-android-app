@@ -1,21 +1,21 @@
 package com.leonardower.mymovie.ui.components.common
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.sharp.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.leonardower.mymovie.R
 import com.leonardower.mymovie.ui.theme.LightGray
 import com.leonardower.mymovie.ui.theme.OrangePrimary
+import com.leonardower.mymovie.ui.theme.GrayButton as GrayButtonColor
 
 @Composable
 fun RatingButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    backgroundColor: Color = GrayButtonColor,
     isRated: Boolean = false,
     rating: Int? = null,
     enabled: Boolean = true
@@ -26,17 +26,19 @@ fun RatingButton(
         stringResource(R.string.rate)
     }
 
-    val icon = if (isRated && rating != null) {
-        Icons.Filled.Star
+    val iconResId = if (isRated && rating != null) {
+        R.drawable.ico__star
     } else {
-        Icons.Sharp.Star
+        R.drawable.ico__star_border
     }
 
     GrayButton(
         text = buttonText,
         onClick = onClick,
         modifier = modifier,
-        icon = icon,
+        backgroundColor = backgroundColor,
+        activeBackgroundColor = backgroundColor,
+        iconResourceId = iconResId,
         iconTint = if (isRated) OrangePrimary else LightGray,
         textColor = LightGray,
         isActive = isRated,

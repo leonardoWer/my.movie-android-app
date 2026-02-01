@@ -15,8 +15,8 @@ class MockFilmRepository : FilmRepository {
                 Genre(2, "Триллер"),
                 Genre(7, "Боевик")
             ),
-            year = 2010,
             rating = 8.8f,
+            description = "Lorem ipsum solum dor Lorem ipsum solum dor Lorem ipsum solum dor Lorem ipsum solum dor Lorem ipsum solum dor",
             isWatchLater = true
         ),
         Film(
@@ -24,8 +24,8 @@ class MockFilmRepository : FilmRepository {
             title = "Побег из Шоушенка",
             posterUrl = "https://m.media-amazon.com/images/M/MV5BNDE3ODcxYzMtY2YzZC00NmNlLWJiNDMtZDViZWM2MzIxZDYwXkEyXkFqcGdeQXVyNjAwNDUxODI@._V1_FMjpg_UX1000_.jpg",
             genres = listOf(Genre(3, "Драма")),
-            year = 1994,
             rating = 9.3f,
+            description = "Lorem ipsum solum dor Lorem ipsum solum dor Lorem ipsum solum dor Lorem ipsum solum dor Lorem ipsum solum dor",
             isWatchLater = true
         ),
         Film(
@@ -36,7 +36,6 @@ class MockFilmRepository : FilmRepository {
                 Genre(3, "Драма"),
                 Genre(8, "Криминал")
             ),
-            year = 1972,
             rating = 9.2f
         ),
         Film(
@@ -48,8 +47,8 @@ class MockFilmRepository : FilmRepository {
                 Genre(2, "Триллер"),
                 Genre(8, "Криминал")
             ),
-            year = 2008,
-            rating = 9.0f
+            rating = 9.0f,
+            description = "Lorem ipsum solum dor Lorem ipsum solum dor Lorem ipsum solum dor Lorem ipsum solum dor Lorem ipsum solum dor",
         ),
         Film(
             id = 5,
@@ -59,8 +58,8 @@ class MockFilmRepository : FilmRepository {
                 Genre(3, "Драма"),
                 Genre(9, "Мелодрама")
             ),
-            year = 2024,
-            rating = 8.5f
+            rating = 8.5f,
+            description = "Lorem ipsum solum dor Lorem ipsum solum dor Lorem ipsum solum dor Lorem ipsum solum dor Lorem ipsum solum dor",
         ),
         Film(
             id = 6,
@@ -71,8 +70,8 @@ class MockFilmRepository : FilmRepository {
                 Genre(7, "Боевик"),
                 Genre(10, "Приключения")
             ),
-            year = 2002,
-            rating = 8.4f
+            rating = 8.4f,
+            description = "Lorem ipsum solum dor Lorem ipsum solum dor Lorem ipsum solum dor Lorem ipsum solum dor Lorem ipsum solum dor, Lorem ipsum solum dor Lorem ipsum solum dor Lorem ipsum solum dor Lorem ipsum solum dor Lorem ipsum solum dor",
         )
     )
 

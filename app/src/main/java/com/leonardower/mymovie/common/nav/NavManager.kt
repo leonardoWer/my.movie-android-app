@@ -27,8 +27,7 @@ class NavigationManager(
     }
 
     fun navigateToFilmDetail(filmId: Long) {
-        // Позже добавим экран деталей фильма
-        // navController?.navigate(Screen.FilmDetail.createRoute(filmId))
+        navController?.navigate(Screen.FilmDetail.createRoute(filmId))
     }
 
     fun navigateToAddFilm() {

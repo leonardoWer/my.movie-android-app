@@ -3,16 +3,19 @@ package com.leonardower.mymovie.ui.components.common
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.leonardower.mymovie.R
 import com.leonardower.mymovie.ui.theme.LightGray
 import com.leonardower.mymovie.ui.theme.OrangePrimary
+import com.leonardower.mymovie.ui.theme.GrayButton as GrayButtonColor
 
 @Composable
 fun WatchLaterButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    backgroundColor: Color = GrayButtonColor,
     isInWatchLater: Boolean = false,
     enabled: Boolean = true
 ) {
@@ -26,6 +29,8 @@ fun WatchLaterButton(
         text = stringResource(R.string.watch_later),
         onClick = onClick,
         modifier = modifier,
+        backgroundColor = backgroundColor,
+        activeBackgroundColor = backgroundColor,
         iconResourceId = iconResId,
         iconTint = if (isInWatchLater) OrangePrimary else LightGray,
         textColor = LightGray,

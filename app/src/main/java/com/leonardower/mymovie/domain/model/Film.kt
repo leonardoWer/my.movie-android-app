@@ -5,7 +5,7 @@ data class Film(
     val title: String,
     val posterUrl: String,
     val genres: List<Genre>,
-    val year: Int? = null,
+    val description: String? = null,
     val rating: Float? = null,
     val isWatchLater: Boolean = false,
     val isViewed: Boolean = false
