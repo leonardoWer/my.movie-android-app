@@ -25,9 +25,9 @@ import com.leonardower.mymovie.ui.theme.DarkBg
 import com.leonardower.mymovie.ui.theme.GrayButton
 
 sealed class FilmTileSize(val width: Dp, val height: Dp) {
-    object Large : FilmTileSize(180.dp, 300.dp)
-    object Big : FilmTileSize(140.dp, 240.dp)
-    object Medium : FilmTileSize(120.dp, 220.dp)
+    data object Large : FilmTileSize(180.dp, 300.dp)
+    data object Big : FilmTileSize(160.dp, 230.dp)
+    data object Medium : FilmTileSize(140.dp, 200.dp)
 }
 
 @Composable

@@ -89,7 +89,7 @@ fun HomeScreenContent(
                             items(uiState.watchLaterFilms) { film ->
                                 FilmTile(
                                     film = film,
-                                    size = FilmTileSize.Medium,
+                                    size = FilmTileSize.Big,
                                     onClick = { onFilmClick(film.id) }
                                 )
                             }

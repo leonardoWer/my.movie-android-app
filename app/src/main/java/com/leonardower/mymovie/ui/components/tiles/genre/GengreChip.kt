@@ -25,7 +25,7 @@ fun GenreChip(
         modifier = modifier
             .wrapContentSize()
             .background(GrayBg)
-            .padding(horizontal = 25.dp, vertical = 8.dp)
+            .padding(horizontal = 30.dp, vertical = 12.dp)
             .clickable { onClick() },
     ) {
         Text(
