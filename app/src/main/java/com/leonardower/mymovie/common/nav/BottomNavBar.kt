@@ -51,7 +51,7 @@ fun BottomNavigationBar(
                 .height(60.dp)
                 .padding(0.dp),
             containerColor = DarkBg,
-            windowInsets = WindowInsets(0, 0, 0, 0)
+            windowInsets = WindowInsets(top = 0)
         ) {
             val navBackStackEntry = navController?.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.value?.destination?.route

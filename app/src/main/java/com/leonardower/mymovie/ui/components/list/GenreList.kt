@@ -30,7 +30,7 @@ fun GenreList(
         item {
             Text(
                 text = stringResource(R.string.genres),
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.displayLarge,
                 color = MaterialTheme.colorScheme.onBackground,
             )
         }
