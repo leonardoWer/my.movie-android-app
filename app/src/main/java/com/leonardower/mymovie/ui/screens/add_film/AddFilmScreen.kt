@@ -1,5 +1,6 @@
 package com.leonardower.mymovie.ui.screens.add_film
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,13 +29,13 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -55,10 +56,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.leonardower.mymovie.R
 import com.leonardower.mymovie.ui.components.common.GrayTextField
 import com.leonardower.mymovie.ui.components.common.IconState
+import com.leonardower.mymovie.ui.components.tiles.genre.GenreChip
 import com.leonardower.mymovie.ui.screens.add_film.vm.AddFilmUiState
 import com.leonardower.mymovie.ui.screens.add_film.vm.AddFilmVM
 import com.leonardower.mymovie.ui.screens.add_film.vm.PosterState
 import com.leonardower.mymovie.ui.screens.add_film.vm.provideAddFilmVMFactory
+import com.leonardower.mymovie.ui.theme.DarkBg
+import com.leonardower.mymovie.ui.theme.GrayBg
 import com.leonardower.mymovie.ui.theme.GrayButton
 import com.leonardower.mymovie.ui.theme.LightGray
 
@@ -220,21 +224,34 @@ private fun AddFilmContent(
         // Подсказки жанров (автодополнение)
         if (uiState.genreSuggestions.isNotEmpty() && uiState.showGenreSuggestions) {
             Card(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
                 elevation = CardDefaults.cardElevation(4.dp)
             ) {
                 Column(
-                    modifier = Modifier.padding(8.dp)
+                    modifier = Modifier
+                        .background(GrayBg)
+                        .padding(
+                            vertical = 8.dp,
+                            horizontal = 16.dp
+                        )
                 ) {
                     uiState.genreSuggestions.forEach { suggestion ->
                         Text(
-                            text = suggestion,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable { onGenreSelect(suggestion) }
-                                .padding(vertical = 8.dp, horizontal = 16.dp)
+                                .padding(vertical = 12.dp),
+                            style = MaterialTheme.typography.titleSmall,
+                            color = Color.White,
+                            text = suggestion,
                         )
-                        HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+                        HorizontalDivider(
+                            modifier = Modifier.fillMaxWidth(),
+                            thickness = 0.8.dp,
+                            color = GrayButton
+                        )
                     }
                 }
             }
@@ -242,23 +259,28 @@ private fun AddFilmContent(
 
         // Выбранные жанры (чипы)
         FlowRow(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            uiState.selectedGenres.forEach { genre ->
-                InputChip(
-                    selected = false,
-                    onClick = { onRemoveGenre(genre) },
-                    label = { Text(genre) },
-                    trailingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = stringResource(R.string.remove_genre),
-                            modifier = Modifier.height(16.dp)
-                        )
-                    },
-                )
+            uiState.selectedGenres.forEach { genreName ->
+                Row(
+                    modifier = Modifier
+                        .clickable { onRemoveGenre(genreName) }
+                        .background(GrayBg)
+                        .align(Alignment.CenterVertically),
+                ) {
+                    GenreChip(genreName)
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = stringResource(R.string.remove_genre),
+                        modifier = Modifier
+                            .size(24.dp)
+                            .padding(4.dp)
+                    )
+                }
             }
         }
 

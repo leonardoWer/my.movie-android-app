@@ -3,6 +3,7 @@ package com.leonardower.mymovie.ui.components.tiles.genre
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.MaterialTheme
@@ -17,9 +18,9 @@ import com.leonardower.mymovie.ui.theme.GrayBg
 
 @Composable
 fun GenreChip(
-    genre: Genre,
+    title: String,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
     Box(
         modifier = modifier
@@ -29,20 +30,39 @@ fun GenreChip(
             .clickable { onClick() },
     ) {
         Text(
-            text = genre.name,
+            text = title,
             style = MaterialTheme.typography.bodySmall,
             color = Color.White
         )
     }
 }
 
+@Composable
+fun GenreChip(
+    genre: Genre,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+) {
+    GenreChip(
+        title = genre.name,
+        modifier = modifier,
+        onClick = onClick
+    )
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun GenreChipPreview() {
-    GenreChip(
-        genre = Genre(
-            id = 1,
-            name = "Драма",
+    Column {
+        GenreChip(
+            genre = Genre(
+                id = 1,
+                name = "Драма",
+            )
         )
-    )
+
+        GenreChip(
+            title = "Тест"
+        )
+    }
 }
