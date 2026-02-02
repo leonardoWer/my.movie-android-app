@@ -13,9 +13,11 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -122,13 +124,7 @@ fun AddFilmScreen(
     ) { paddingValues ->
         AddFilmContent(
             uiState = uiState,
-            onTitleChange = viewModel::onTitleChange,
-            onPosterUrlChange = viewModel::onPosterUrlChange,
-            onGenreInputChange = viewModel::onGenreInputChange,
-            onGenreSelect = viewModel::onGenreSelect,
-            onRemoveGenre = viewModel::onRemoveGenre,
-            onRateClick = viewModel::onRateClick,
-            onWatchLaterClick = viewModel::onWatchLaterClick,
+            viewModel = viewModel,
             modifier = Modifier.padding(paddingValues)
         )
     }
@@ -139,13 +135,7 @@ fun AddFilmScreen(
 @Composable
 private fun AddFilmContent(
     uiState: AddFilmUiState,
-    onTitleChange: (String) -> Unit,
-    onPosterUrlChange: (String) -> Unit,
-    onGenreInputChange: (String) -> Unit,
-    onGenreSelect: (String) -> Unit,
-    onRemoveGenre: (String) -> Unit,
-    onRateClick: () -> Unit,
-    onWatchLaterClick: () -> Unit,
+    viewModel: AddFilmVM,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -160,18 +150,85 @@ private fun AddFilmContent(
             modifier = Modifier
                 .fillMaxWidth(),
             value = uiState.title,
-            onValueChange = onTitleChange,
+            onValueChange = viewModel::onTitleChange,
             placeholder = stringResource(R.string.name),
             singleLine = true,
             isError = uiState.titleError == null,
             errorMessage = uiState.titleError
         )
 
-        // Секция для прикрепления картинки (Grid 1x3)
+        // Поле ввода жанра с автодополнением
+        GrayTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = uiState.genreInput,
+            onValueChange = viewModel::onGenreInputChange,
+            placeholder = stringResource(R.string.select_genre),
+            singleLine = true
+        )
+        // Подсказки жанров
+        if (uiState.genreSuggestions.isNotEmpty() && uiState.showGenreSuggestions) {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                elevation = CardDefaults.cardElevation(4.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .background(GrayBg)
+                        .padding(
+                            vertical = 8.dp,
+                            horizontal = 16.dp
+                        )
+                ) {
+                    uiState.genreSuggestions.forEach { suggestion ->
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { viewModel.onGenreSelect(suggestion) }
+                                .padding(vertical = 12.dp),
+                            style = MaterialTheme.typography.titleSmall,
+                            color = Color.White,
+                            text = suggestion,
+                        )
+                        HorizontalDivider(
+                            modifier = Modifier.fillMaxWidth(),
+                            thickness = 0.8.dp,
+                            color = GrayButton
+                        )
+                    }
+                }
+            }
+        }
+        // Выбранные жанры
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            uiState.selectedGenres.forEach { genreName ->
+                Row(
+                    modifier = Modifier
+                        .clickable { viewModel.onRemoveGenre(genreName) }
+                        .background(GrayBg)
+                        .align(Alignment.CenterVertically),
+                ) {
+                    GenreChip(genreName)
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = stringResource(R.string.remove_genre),
+                        modifier = Modifier
+                            .size(24.dp)
+                            .padding(4.dp)
+                    )
+                }
+            }
+        }
+
+
+        // Прикрепление картинки (Grid 1x3)
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
             modifier = Modifier
-                .height(42.dp),
+                .heightIn(min = 42.dp, max = 70.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             // Поле для URL картинки (занимает 2 колонки)
@@ -179,7 +236,7 @@ private fun AddFilmContent(
                 GrayTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = uiState.posterUrl,
-                    onValueChange = onPosterUrlChange,
+                    onValueChange = viewModel::onPosterUrlChange,
                     placeholder = stringResource(R.string.poster_url),
                     leadingIcon = Icons.Default.Search,
                     leadingIconState = when (uiState.posterState) {
@@ -189,9 +246,10 @@ private fun AddFilmContent(
                         else -> IconState.None
                     },
                     trailingIcon = Icons.Default.Clear,
-                    onTrailingIconClick = { onPosterUrlChange("")},
+                    onTrailingIconClick = { viewModel.onPosterUrlChange("")},
+                    isError = uiState.posterState == PosterState.Error,
+                    errorMessage = uiState.posterValidationMessage,
                     showSuccessBorder = uiState.posterState == PosterState.Valid,
-                    singleLine = true
                 )
             }
 
@@ -232,75 +290,17 @@ private fun AddFilmContent(
             }
         }
 
-        // Поле ввода жанра с автодополнением
+        // Описание
         GrayTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = uiState.genreInput,
-            onValueChange = onGenreInputChange,
-            placeholder = stringResource(R.string.select_genre),
-            singleLine = true
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
+            value = uiState.description,
+            onValueChange = viewModel::onDescriptionChange,
+            placeholder = stringResource(R.string.description),
+            singleLine = false,
+            maxLines = 5,
         )
-
-        // Подсказки жанров (автодополнение)
-        if (uiState.genreSuggestions.isNotEmpty() && uiState.showGenreSuggestions) {
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(4.dp)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .background(GrayBg)
-                        .padding(
-                            vertical = 8.dp,
-                            horizontal = 16.dp
-                        )
-                ) {
-                    uiState.genreSuggestions.forEach { suggestion ->
-                        Text(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { onGenreSelect(suggestion) }
-                                .padding(vertical = 12.dp),
-                            style = MaterialTheme.typography.titleSmall,
-                            color = Color.White,
-                            text = suggestion,
-                        )
-                        HorizontalDivider(
-                            modifier = Modifier.fillMaxWidth(),
-                            thickness = 0.8.dp,
-                            color = GrayButton
-                        )
-                    }
-                }
-            }
-        }
-
-        // Выбранные жанры
-        FlowRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            uiState.selectedGenres.forEach { genreName ->
-                Row(
-                    modifier = Modifier
-                        .clickable { onRemoveGenre(genreName) }
-                        .background(GrayBg)
-                        .align(Alignment.CenterVertically),
-                ) {
-                    GenreChip(genreName)
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = stringResource(R.string.remove_genre),
-                        modifier = Modifier
-                            .size(24.dp)
-                            .padding(4.dp)
-                    )
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(4.dp))
 
         // Рейтинг и буду смотреть
         LazyVerticalGrid(
@@ -313,13 +313,13 @@ private fun AddFilmContent(
                 RatingButton(
                     isRated = uiState.isRated,
                     rating = uiState.rating,
-                    onClick = { onRateClick() }
+                    onClick = { viewModel.onRateClick() }
                 )
             }
             item {
                 WatchLaterButton(
                     isInWatchLater = uiState.isInWatchLater,
-                    onClick = { onWatchLaterClick() }
+                    onClick = { viewModel.onWatchLaterClick() }
                 )
             }
         }

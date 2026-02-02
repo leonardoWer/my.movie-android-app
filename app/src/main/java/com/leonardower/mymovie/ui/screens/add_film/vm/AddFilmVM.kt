@@ -75,7 +75,7 @@ class AddFilmVM(
 
         // Запускаем новую задачу с debounce
         validationJob = viewModelScope.launch {
-            delay(800)
+            delay(1000)
 
             // Проверяем URL
             val isValid = validateImageUrl(url)
@@ -127,7 +127,7 @@ class AddFilmVM(
 
                 connection.disconnect()
 
-                isSuccess && isImage
+                isSuccess || isImage
 
             } catch (e: Exception) {
                 false

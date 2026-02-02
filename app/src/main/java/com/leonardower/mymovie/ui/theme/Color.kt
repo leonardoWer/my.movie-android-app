@@ -10,4 +10,5 @@ val GrayBg = Color(0xFF141414)
 val GrayButton = Color(0xFF262626)
 val LightGray = Color(0xFF858585)
 
+val ErrorRed = Color.Red
 val SuccessGreen = Color.Green

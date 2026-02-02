@@ -11,6 +11,8 @@ private val DarkColorScheme = darkColorScheme(
     primary = OrangePrimary,
     onPrimary = Color.White,
     surface = GrayButton,
+    error = ErrorRed,
+    onError = Color.White
 )
 
 @Composable

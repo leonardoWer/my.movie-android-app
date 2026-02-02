@@ -52,7 +52,7 @@ fun GrayTextField(
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     singleLine: Boolean = true,
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
-    height: Dp = 42.dp,
+    minHeight: Dp = 42.dp,
     enabled: Boolean = true,
     textStyle: TextStyle = MaterialTheme.typography.bodyMedium.copy(color = LightGray),
     isError: Boolean = false,
@@ -65,7 +65,7 @@ fun GrayTextField(
 
     // Цвет обводки
     val borderColor = when {
-        isError -> MaterialTheme.colorScheme.error
+        (isError && isFocused) -> MaterialTheme.colorScheme.error
         (showSuccessBorder && isFocused) -> SuccessGreen
         isFocused -> OrangePrimary
         else -> GrayButton
@@ -80,7 +80,13 @@ fun GrayTextField(
     Column(modifier = modifier) {
         Box(
             modifier = Modifier
-                .height(height)
+                .run {
+                    if (singleLine) {
+                        this.height(minHeight)
+                    } else {
+                        this.heightIn(min = minHeight)
+                    }
+                }
                 .border(
                     width = borderWidth,
                     color = borderColor,
@@ -98,8 +104,15 @@ fun GrayTextField(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(horizontal = 8.dp)
+                    .run {
+                        if (singleLine) {
+                            this.height(minHeight)
+                        } else {
+                            this.heightIn(min = minHeight)
+                        }
+                    },
+                verticalAlignment = if (singleLine) Alignment.CenterVertically else Alignment.Top
             ) {
                 // Leading Icon
                 if (leadingIcon != null) {
@@ -149,6 +162,13 @@ fun GrayTextField(
                 // Текстовое поле
                 Box(
                     modifier = Modifier
+                        .run {
+                            if (singleLine) {
+                                this.height(minHeight)
+                            } else {
+                                this.heightIn(min = minHeight)
+                            }
+                        }
                         .weight(1f)
                         .padding(
                             start = if (leadingIcon != null) 8.dp else 0.dp,
@@ -203,16 +223,18 @@ fun GrayTextField(
                             )
                     )
                 }
-
-                // Сообщение об ошибке
-                if (isError && errorMessage != null) {
-                    Text(
-                        text = errorMessage,
-                        style = MaterialTheme.typography.labelSmall.copy(color = MaterialTheme.colorScheme.error),
-                        modifier = Modifier.padding(start = 4.dp)
-                    )
-                }
             }
+        }
+
+        // Сообщение об ошибке
+        if (isError && errorMessage != null) {
+            Text(
+                text = errorMessage,
+                style = MaterialTheme.typography.labelSmall.copy(color = MaterialTheme.colorScheme.error),
+                modifier = Modifier
+                    .padding(vertical = 8.dp)
+                    .padding(start = 4.dp)
+            )
         }
     }
 }
@@ -274,6 +296,17 @@ fun CustomTextFieldPreview() {
                 placeholder = "Обязательное поле",
                 isError = true,
                 errorMessage = "Ошибка"
+            )
+
+            // Пример в состоянии ошибки
+            GrayTextField(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                value = "",
+                onValueChange = {},
+                placeholder = "Описание",
+                singleLine = false,
+                maxLines = 5
             )
         }
     }
