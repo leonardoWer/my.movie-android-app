@@ -17,7 +17,7 @@ fun RatingButton(
     modifier: Modifier = Modifier,
     backgroundColor: Color = GrayButtonColor,
     isRated: Boolean = false,
-    rating: Int? = null,
+    rating: Float? = null,
     enabled: Boolean = true
 ) {
     val buttonText = if (isRated && rating != null) {
@@ -57,7 +57,7 @@ private fun Preview() {
         RatingButton(
             onClick = {},
             isRated = true,
-            rating = 8
+            rating = 8f
         )
     }
 }

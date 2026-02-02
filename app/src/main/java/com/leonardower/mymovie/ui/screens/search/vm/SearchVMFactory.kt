@@ -1,26 +1,19 @@
 package com.leonardower.mymovie.ui.screens.search.vm
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.leonardower.mymovie.domain.repo.FilmRepository
-import com.leonardower.mymovie.domain.repo.GenreRepository
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.leonardower.mymovie.App
 
-class SearchVMFactory(
-    private val filmRepository: FilmRepository,
-    private val genreRepository: GenreRepository
-) : ViewModelProvider.Factory {
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(SearchVM::class.java)) {
-            return SearchVM(filmRepository, genreRepository) as T
+object SearchViewModelFactory {
+    val factory = viewModelFactory {
+        initializer {
+            val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]
+                    as App)
+            SearchVM(
+                filmManager = application.appModule.filmManager,
+                genreManager = application.appModule.genreManager
+            )
         }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
-}
-
-fun provideSearchVMFactory(
-    filmRepository: FilmRepository,
-    genreRepository: GenreRepository
-): ViewModelProvider.Factory {
-    return SearchVMFactory(filmRepository, genreRepository)
 }

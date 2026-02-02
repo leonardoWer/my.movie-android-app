@@ -14,23 +14,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.leonardower.mymovie.R
-import com.leonardower.mymovie.domain.repo.MockFilmRepository
-import com.leonardower.mymovie.domain.repo.MockGenreRepository
 import com.leonardower.mymovie.ui.components.common.SearchBar
 import com.leonardower.mymovie.ui.components.list.GenreList
 import com.leonardower.mymovie.ui.screens.search.vm.SearchVM
-import com.leonardower.mymovie.ui.screens.search.vm.provideSearchVMFactory
+import com.leonardower.mymovie.ui.screens.search.vm.SearchViewModelFactory
 
 @Composable
 fun SearchScreen(
     viewModel: SearchVM = viewModel(
-        factory = provideSearchVMFactory(
-            MockFilmRepository(),
-            MockGenreRepository()
-        )
+        factory = SearchViewModelFactory.factory
     )
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val allGenres by viewModel.allGenres.collectAsState()
 
     Column(
         modifier = Modifier
@@ -60,7 +56,7 @@ fun SearchScreen(
             else -> {
                 GenreList(
                     modifier = Modifier.padding(16.dp),
-                    allGenres = uiState.allGenres,
+                    allGenres = allGenres,
                     onGenreClick = viewModel::onGenreClick
                 )
             }

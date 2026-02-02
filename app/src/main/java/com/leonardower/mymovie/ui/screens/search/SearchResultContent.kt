@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.leonardower.mymovie.R
-import com.leonardower.mymovie.domain.model.Film
-import com.leonardower.mymovie.domain.model.Genre
+import com.leonardower.mymovie.data.local.entities.Film
+import com.leonardower.mymovie.data.local.entities.Genre
 import com.leonardower.mymovie.ui.components.tiles.film.FilmTile
 import com.leonardower.mymovie.ui.components.tiles.film.FilmTileSize
 import com.leonardower.mymovie.ui.components.tiles.genre.GenreTile

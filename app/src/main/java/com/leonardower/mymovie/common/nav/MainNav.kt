@@ -7,8 +7,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.leonardower.mymovie.ui.screens.add_film.AddFilmScreen
-import com.leonardower.mymovie.ui.screens.film_details.FilmDetailScreen
-import com.leonardower.mymovie.ui.screens.films_in_genre.FilmsInGenreScreen
+//import com.leonardower.mymovie.ui.screens.film_details.FilmDetailScreen
+//import com.leonardower.mymovie.ui.screens.films_in_genre.FilmsInGenreScreen
 import com.leonardower.mymovie.ui.screens.home.HomeScreen
 import com.leonardower.mymovie.ui.screens.search.SearchScreen
 
@@ -34,27 +34,27 @@ fun MainNav(
             SearchScreen()
         }
 
-        composable(
-            route = Screen.FilmsInGenre.route,
-            arguments = Screen.FilmsInGenre.arguments
-        ) { backStackEntry ->
-            val genreId = backStackEntry.arguments?.getLong("genreId") ?: 0L
-            FilmsInGenreScreen(
-                genreId = genreId,
-                onBackClick = { navController.navigateUp() },
-            )
-        }
+//        composable(
+//            route = Screen.FilmsInGenre.route,
+//            arguments = Screen.FilmsInGenre.arguments
+//        ) { backStackEntry ->
+//            val genreId = backStackEntry.arguments?.getLong("genreId") ?: 0L
+//            FilmsInGenreScreen(
+//                genreId = genreId,
+//                onBackClick = { navController.navigateUp() },
+//            )
+//        }
 
-        composable(
-            route = Screen.FilmDetail.route,
-            arguments = Screen.FilmDetail.arguments
-        ) { backStackEntry ->
-            val filmId = backStackEntry.arguments?.getLong("filmId") ?: 0L
-            FilmDetailScreen(
-                filmId = filmId,
-                onBackClick = { AppNavigation.manager.navigateBack() }
-            )
-        }
+//        composable(
+//            route = Screen.FilmDetail.route,
+//            arguments = Screen.FilmDetail.arguments
+//        ) { backStackEntry ->
+//            val filmId = backStackEntry.arguments?.getLong("filmId") ?: 0L
+//            FilmDetailScreen(
+//                filmId = filmId,
+//                onBackClick = { AppNavigation.manager.navigateBack() }
+//            )
+//        }
 
         composable(Screen.AddFilm.route) {
             AddFilmScreen(

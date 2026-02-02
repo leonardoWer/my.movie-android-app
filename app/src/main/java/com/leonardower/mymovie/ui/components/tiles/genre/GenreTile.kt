@@ -1,6 +1,5 @@
 package com.leonardower.mymovie.ui.components.tiles.genre
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,11 +10,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.leonardower.mymovie.domain.model.Genre
+import com.leonardower.mymovie.data.local.entities.Genre
 import com.leonardower.mymovie.ui.theme.GrayButton
 
 @Composable
@@ -54,15 +52,4 @@ fun GenreTile(
                 .padding(start = 16.dp)
         )
     }
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFF000000)
-@Composable
-private fun GenreTilePreview() {
-    GenreTile(
-        genre = Genre(
-            id = 1,
-            name = "Драма",
-        )
-    )
 }

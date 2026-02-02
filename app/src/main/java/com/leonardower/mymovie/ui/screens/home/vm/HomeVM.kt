@@ -2,58 +2,100 @@ package com.leonardower.mymovie.ui.screens.home.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.leonardower.mymovie.common.helpers.FilmWithGenreNames
 import com.leonardower.mymovie.common.nav.AppNavigation
-import com.leonardower.mymovie.domain.model.Film
-import com.leonardower.mymovie.domain.model.Genre
-import com.leonardower.mymovie.domain.repo.FilmRepository
-import com.leonardower.mymovie.domain.repo.GenreRepository
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.leonardower.mymovie.data.local.entities.Film
+import com.leonardower.mymovie.data.local.entities.Genre
+import com.leonardower.mymovie.data.local.managers.FilmManager
+import com.leonardower.mymovie.data.local.managers.GenreManager
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class HomeVM(
-    private val filmRepository: FilmRepository,
-    private val genreRepository: GenreRepository
+    private val filmManager: FilmManager,
+    private val genreManager: GenreManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
+    // Поток фильмов "Буду смотреть"
+    val watchLaterFilms: StateFlow<List<FilmWithGenreNames>> = this
+        .getWatchLaterFilmsWithGenreNames()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
+
+    // Поток всех жанров
+    val allGenres: StateFlow<List<Genre>> = genreManager
+        .getAllGenres()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
+
+    // Фильмы по жанрам
+    val filmsByGenre: StateFlow<Map<Genre, List<FilmWithGenreNames>>> = this
+        .getFilmsGroupedByGenre()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyMap()
+        )
+
     init {
-        loadData()
+        loadInitialData()
     }
 
-    private fun loadData() {
+    private fun loadInitialData() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
-
+            _uiState.update { it.copy(isLoading = true) }
             try {
-                // Загружаем данные из репозиториев
-                val watchLaterFilms = filmRepository.getWatchLaterFilms()
-                val allGenres = genreRepository.getAllGenres()
-                val filmsByGenre = mutableMapOf<Genre, List<Film>>()
-
-                // Группируем фильмы по жанрам
-                allGenres.forEach { genre ->
-                    val films = filmRepository.getFilmsByGenre(genre.id)
-                    if (films.isNotEmpty()) {
-                        filmsByGenre[genre] = films
-                    }
-                }
-
-                _uiState.value = HomeUiState(
-                    watchLaterFilms = watchLaterFilms,
-                    allGenres = allGenres,
-                    filmsByGenre = filmsByGenre,
-                    isLoading = false
-                )
+                // Ждем загрузки хотя бы одного потока
+                allGenres.first()
+                watchLaterFilms.first()
+                _uiState.update { it.copy(isLoading = false, isEmpty = false) }
             } catch (e: Exception) {
-                // Обработка ошибок
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    error = e.message
-                )
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        error = "Ошибка загрузки данных: ${e.message}",
+                        isEmpty = true
+                    )
+                }
+            }
+        }
+    }
+
+    private fun getFilmsGroupedByGenre(): Flow<Map<Genre, List<FilmWithGenreNames>>> {
+        return filmManager.getFilmsGroupedByGenre()
+            .map { filmsMap ->
+                filmsMap.mapValues { (_, filmList) ->
+                    getFilmsWithGenreNames(filmList)
+                }
+        }
+    }
+
+    // Получение фильмов с названиями жанров
+    suspend fun getFilmWithGenreNames(filmId: Long): FilmWithGenreNames? {
+        val film = filmManager.getFilmById(filmId) ?: return null
+        val genreNames = genreManager.getGenreNamesForFilm(filmId)
+        return FilmWithGenreNames(film, genreNames)
+    }
+    private suspend fun getFilmsWithGenreNames(films: List<Film>): List<FilmWithGenreNames> {
+        return films.map { film ->
+            val genreNames = genreManager.getGenreNamesForFilm(film.id)
+            FilmWithGenreNames(film, genreNames)
+        }
+    }
+    private fun getWatchLaterFilmsWithGenreNames(): Flow<List<FilmWithGenreNames>> {
+        return filmManager.getWatchLaterFilms().map { films ->
+            films.map { film ->
+                val genreNames = genreManager.getGenreNamesForFilm(film.id)
+                FilmWithGenreNames(film, genreNames)
             }
         }
     }
@@ -69,9 +111,8 @@ class HomeVM(
 
 // Состояние экрана
 data class HomeUiState(
-    val watchLaterFilms: List<Film> = emptyList(),
-    val allGenres: List<Genre> = emptyList(),
-    val filmsByGenre: Map<Genre, List<Film>> = emptyMap(),
-    val isLoading: Boolean = true,
+    val none: Boolean = true,
+    val isEmpty: Boolean = false,
+    val isLoading: Boolean = false,
     val error: String? = null
 )

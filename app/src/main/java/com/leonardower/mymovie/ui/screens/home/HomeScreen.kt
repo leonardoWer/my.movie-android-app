@@ -2,13 +2,13 @@ package com.leonardower.mymovie.ui.screens.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -22,33 +22,36 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.leonardower.mymovie.R
+import com.leonardower.mymovie.common.helpers.FilmWithGenreNames
 import com.leonardower.mymovie.common.nav.AppNavigation
-import com.leonardower.mymovie.domain.repo.MockFilmRepository
-import com.leonardower.mymovie.domain.repo.MockGenreRepository
+import com.leonardower.mymovie.data.local.entities.Genre
 import com.leonardower.mymovie.ui.components.list.FilmList
 import com.leonardower.mymovie.ui.components.tiles.film.FilmTile
 import com.leonardower.mymovie.ui.components.tiles.film.FilmTileSize
 import com.leonardower.mymovie.ui.components.tiles.genre.GenreChip
 import com.leonardower.mymovie.ui.screens.home.vm.HomeUiState
 import com.leonardower.mymovie.ui.screens.home.vm.HomeVM
-import com.leonardower.mymovie.ui.screens.home.vm.provideHomeVMFactory
+import com.leonardower.mymovie.ui.screens.home.vm.HomeViewModelFactory
+import com.leonardower.mymovie.ui.theme.LightGray
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeVM = viewModel(
-        factory = provideHomeVMFactory(
-            MockFilmRepository(),
-            MockGenreRepository()
-        )
+        factory = HomeViewModelFactory.factory
     )
 ) {
+    val watchLaterFilms by viewModel.watchLaterFilms.collectAsState()
+    val allGenres by viewModel.allGenres.collectAsState()
+    val filmsByGenre by viewModel.filmsByGenre.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
@@ -71,6 +74,9 @@ fun HomeScreen(
         HomeScreenContent(
             modifier = Modifier.padding(paddingValues),
             uiState = uiState,
+            watchLaterFilms = watchLaterFilms,
+            allGenres = allGenres,
+            filmsByGenre = filmsByGenre,
             onFilmClick = viewModel::onFilmClick,
             onGenreClick = viewModel::onGenreClick
         )
@@ -81,6 +87,9 @@ fun HomeScreen(
 fun HomeScreenContent(
     modifier: Modifier = Modifier,
     uiState: HomeUiState,
+    watchLaterFilms: List<FilmWithGenreNames>,
+    allGenres: List<Genre>,
+    filmsByGenre: Map<Genre, List<FilmWithGenreNames>>,
     onFilmClick: (Long) -> Unit = {},
     onGenreClick: (Long) -> Unit = {},
 
@@ -98,12 +107,38 @@ fun HomeScreenContent(
             modifier = Modifier.padding(horizontal = 16.dp)
         )
 
-        if (uiState.isLoading) {
+        if (uiState.isEmpty) {
+            // TODO: Add empty state component
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Вы не добавили ни одного фильма",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = LightGray
+                )
+            }
+        } else if (uiState.isLoading) {
             CircularProgressIndicator()
+        } else if (uiState.error != null) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = uiState.error,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
         } else {
-
             // Секция "Буду смотреть"
-            if (uiState.watchLaterFilms.isNotEmpty()) {
+            if (watchLaterFilms.isNotEmpty()) {
                 FilmList(
                     title = "Буду смотреть",
                     content = {
@@ -111,11 +146,13 @@ fun HomeScreenContent(
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
                             contentPadding = PaddingValues(horizontal = 16.dp)
                         ) {
-                            items(uiState.watchLaterFilms) { film ->
+                            items(watchLaterFilms.size) { index ->
+                                val it = watchLaterFilms[index]
                                 FilmTile(
-                                    film = film,
+                                    film = it.film,
+                                    filmGenreNames = it.genreNames,
                                     size = FilmTileSize.Big,
-                                    onClick = { onFilmClick(film.id) }
+                                    onClick = { onFilmClick(it.film.id) }
                                 )
                             }
                         }
@@ -124,7 +161,7 @@ fun HomeScreenContent(
             }
 
             // Секция "Жанры"
-            if (uiState.allGenres.isNotEmpty()) {
+            if (allGenres.isNotEmpty()) {
                 FilmList(
                     title = "Жанры",
                     content = {
@@ -132,7 +169,8 @@ fun HomeScreenContent(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                             contentPadding = PaddingValues(horizontal = 16.dp)
                         ) {
-                            items(uiState.allGenres) { genre ->
+                            items(allGenres.size) { index ->
+                                val genre = allGenres[index]
                                 GenreChip(
                                     genre = genre,
                                     onClick = { onGenreClick(genre.id) }
@@ -144,7 +182,7 @@ fun HomeScreenContent(
             }
 
             // Секции по жанрам
-            uiState.filmsByGenre.forEach { (genre, films) ->
+            filmsByGenre.forEach { (genre, films) ->
                 if (films.isNotEmpty()) {
                     FilmList(
                         title = genre.name,
@@ -153,11 +191,13 @@ fun HomeScreenContent(
                                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                                 contentPadding = PaddingValues(horizontal = 16.dp)
                             ) {
-                                items(films) { film ->
+                                items(films.size) { index ->
+                                    val it = films[index]
                                     FilmTile(
-                                        film = film,
+                                        film = it.film,
+                                        filmGenreNames = it.genreNames,
                                         size = FilmTileSize.Medium,
-                                        onClick = { onFilmClick(film.id) }
+                                        onClick = { onFilmClick(it.film.id) }
                                     )
                                 }
                             }
@@ -167,4 +207,10 @@ fun HomeScreenContent(
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun Preview() {
+    HomeScreen()
 }

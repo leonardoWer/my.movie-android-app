@@ -60,8 +60,8 @@ import com.leonardower.mymovie.ui.components.common.WatchLaterButton
 import com.leonardower.mymovie.ui.components.tiles.genre.GenreChip
 import com.leonardower.mymovie.ui.screens.add_film.vm.AddFilmUiState
 import com.leonardower.mymovie.ui.screens.add_film.vm.AddFilmVM
+import com.leonardower.mymovie.ui.screens.add_film.vm.AddFilmViewModelFactory
 import com.leonardower.mymovie.ui.screens.add_film.vm.PosterState
-import com.leonardower.mymovie.ui.screens.add_film.vm.provideAddFilmVMFactory
 import com.leonardower.mymovie.ui.theme.GrayBg
 import com.leonardower.mymovie.ui.theme.GrayButton
 import com.leonardower.mymovie.ui.theme.LightGray
@@ -71,7 +71,9 @@ import com.leonardower.mymovie.ui.theme.LightGray
 fun AddFilmScreen(
     onBackClick: () -> Unit,
     onSaveSuccess: () -> Unit,
-    viewModel: AddFilmVM = viewModel(factory = provideAddFilmVMFactory())
+    viewModel: AddFilmVM = viewModel(
+        factory = AddFilmViewModelFactory.factory
+    )
 ) {
     val uiState by viewModel.uiState.collectAsState()
 

@@ -20,7 +20,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.leonardower.mymovie.domain.model.Film
+import com.leonardower.mymovie.data.local.entities.Film
 import com.leonardower.mymovie.ui.theme.DarkBg
 import com.leonardower.mymovie.ui.theme.GrayButton
 
@@ -35,6 +35,7 @@ fun FilmTile(
     film: Film,
     size: FilmTileSize,
     modifier: Modifier = Modifier,
+    filmGenreNames: List<String> = emptyList(),
     onClick: () -> Unit = {}
 ) {
     Column(
@@ -56,7 +57,7 @@ fun FilmTile(
             )
 
             // TODO: Добавить кастомное изображение как у кинопоиска
-            film.rating?.let { rating ->
+            film.userRating?.let { rating ->
                 Box(
                     modifier = Modifier
                         .padding(8.dp)
@@ -87,9 +88,9 @@ fun FilmTile(
             )
 
             // Жанры
-            if (film.genres.isNotEmpty()) {
+            if (filmGenreNames.isNotEmpty()) {
                 Text(
-                    text = film.genres.joinToString(", ") { it.name },
+                    text = filmGenreNames.joinToString(", ") { it },
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray,
                     maxLines = 1,

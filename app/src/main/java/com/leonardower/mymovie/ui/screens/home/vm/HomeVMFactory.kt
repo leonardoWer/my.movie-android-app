@@ -1,16 +1,21 @@
 package com.leonardower.mymovie.ui.screens.home.vm
 
-import com.leonardower.mymovie.domain.repo.FilmRepository
-import com.leonardower.mymovie.domain.repo.GenreRepository
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.leonardower.mymovie.App
 
-fun provideHomeVMFactory(
-    filmRepository: FilmRepository,
-    genreRepository: GenreRepository
-): androidx.lifecycle.ViewModelProvider.Factory {
-    return object : androidx.lifecycle.ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
-            return HomeVM(filmRepository, genreRepository) as T
+object HomeViewModelFactory {
+    val factory = viewModelFactory {
+        initializer {
+            val application = (
+                    this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]
+                    as App
+            )
+            HomeVM(
+                filmManager = application.appModule.filmManager,
+                genreManager = application.appModule.genreManager
+            )
         }
     }
 }
