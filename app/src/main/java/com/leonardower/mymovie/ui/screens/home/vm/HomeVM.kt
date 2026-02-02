@@ -80,11 +80,6 @@ class HomeVM(
     }
 
     // Получение фильмов с названиями жанров
-    suspend fun getFilmWithGenreNames(filmId: Long): FilmWithGenreNames? {
-        val film = filmManager.getFilmById(filmId) ?: return null
-        val genreNames = genreManager.getGenreNamesForFilm(filmId)
-        return FilmWithGenreNames(film, genreNames)
-    }
     private suspend fun getFilmsWithGenreNames(films: List<Film>): List<FilmWithGenreNames> {
         return films.map { film ->
             val genreNames = genreManager.getGenreNamesForFilm(film.id)

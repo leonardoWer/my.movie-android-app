@@ -32,15 +32,15 @@ interface FilmDao {
 
     // Получение фильмов
     @Query("SELECT * FROM films WHERE id = :filmId")
-    suspend fun getFilmById(filmId: Long): Film?
+    fun getFilmById(filmId: Long): Flow<Film?>
 
     @Query("SELECT * FROM films ORDER BY created_at DESC")
     fun getAllFilms(): Flow<List<Film>>
 
-    @Query("SELECT * FROM films WHERE is_watch_later = 1 ORDER BY created_at DESC")
+    @Query("SELECT * FROM films WHERE is_watch_later = 1 ORDER BY created_at")
     fun getWatchLaterFilms(): Flow<List<Film>>
 
-    @Query("SELECT * FROM films WHERE is_viewed = 1 ORDER BY view_date DESC")
+    @Query("SELECT * FROM films WHERE is_viewed = 1 ORDER BY view_date")
     fun getViewedFilms(): Flow<List<Film>>
 
 

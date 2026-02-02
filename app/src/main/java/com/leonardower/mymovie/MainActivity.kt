@@ -12,7 +12,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.leonardower.mymovie.common.nav.BottomNavigationBar
+import com.leonardower.mymovie.common.nav.ui.BottomNavigationBar
 import com.leonardower.mymovie.common.nav.MainNav
 import com.leonardower.mymovie.data.local.di.AppModule
 import com.leonardower.mymovie.ui.theme.MyMovieTheme

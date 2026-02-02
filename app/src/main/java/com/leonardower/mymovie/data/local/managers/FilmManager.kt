@@ -17,9 +17,7 @@ class FilmManager(
     fun getAllFilms(): Flow<List<Film>> = filmDao.getAllFilms()
     fun getWatchLaterFilms(): Flow<List<Film>> = filmDao.getWatchLaterFilms()
     fun getViewedFilms(): Flow<List<Film>> = filmDao.getViewedFilms()
-
-    // Получение одного фильма
-    suspend fun getFilmById(filmId: Long): Film? {
+    fun getFilmById(filmId: Long): Flow<Film?> {
         return filmDao.getFilmById(filmId)
     }
 

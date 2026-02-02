@@ -1,4 +1,4 @@
-package com.leonardower.mymovie.common.nav
+package com.leonardower.mymovie.common.nav.bottom
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
