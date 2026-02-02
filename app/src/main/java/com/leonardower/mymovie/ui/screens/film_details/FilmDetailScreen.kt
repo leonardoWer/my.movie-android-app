@@ -24,6 +24,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.leonardower.mymovie.R
 import com.leonardower.mymovie.common.helpers.FilmWithGenreNames
+import com.leonardower.mymovie.data.local.entities.Film
 import com.leonardower.mymovie.ui.components.common.RatingButton
 import com.leonardower.mymovie.ui.components.common.WatchLaterButton
 import com.leonardower.mymovie.ui.screens.film_details.vm.FilmDetailUiState
@@ -50,14 +51,12 @@ fun FilmDetailScreen(
                 onBackClick = onBackClick
             )
         },
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
-    ) { paddingValues ->
+    ) { _ ->
         FilmDetailContent(
             uiState = uiState,
             filmWithGenreNames = filmWithGenreNames,
             onRateClick = viewModel::onRateClick,
             onWatchLaterClick = viewModel::onWatchLaterClick,
-            modifier = Modifier.padding(paddingValues)
         )
     }
 }
@@ -111,7 +110,7 @@ private fun FilmDetailContent(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height((LocalConfiguration.current.screenHeightDp * 0.6).dp)
+                    .height((LocalConfiguration.current.screenHeightDp * 0.7).dp)
                     .background(GrayBg)
             ) {
                 // Постер фильма
@@ -130,8 +129,10 @@ private fun FilmDetailContent(
                             brush = Brush.verticalGradient(
                                 colors = listOf(
                                     Color.Transparent,
+                                    Color.Transparent,
                                     DarkBg.copy(alpha = 0.3f),
-                                    DarkBg.copy(alpha = 0.6f),
+                                    DarkBg.copy(alpha = 0.5f),
+                                    DarkBg.copy(alpha = 0.8f),
                                     DarkBg.copy(alpha = 0.9f),
                                     DarkBg
                                 ),
@@ -214,7 +215,7 @@ private fun FilmDetailContent(
                 Spacer(modifier = Modifier.height(32.dp))
 
                 // Описание фильма
-                if (film?.description != null) {
+                if (film?.description != null && film.description.isNotEmpty()) {
                     Text(
                         text = stringResource(R.string.description),
                         style = MaterialTheme.typography.titleMedium,
@@ -232,8 +233,26 @@ private fun FilmDetailContent(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview
 @Composable
 private fun Preview() {
-    FilmDetailScreen(1, {})
+    Column(
+        modifier = Modifier
+            .background(DarkBg)
+    ) {
+        FilmDetailTopAppBar {}
+        FilmDetailContent(
+            FilmDetailUiState(),
+            FilmWithGenreNames(
+                film = Film(
+                    0,
+                    "Тест",
+                    "",
+                    "Lorem ipsum solum dor"
+                ),
+                genreNames = listOf("Драма, Комедия")
+            ),
+            {}, {}
+        )
+    }
 }
