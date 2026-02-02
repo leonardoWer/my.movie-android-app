@@ -1,4 +1,4 @@
-package com.leonardower.mymovie.common.nav.ui
+package com.leonardower.mymovie.common.nav.bottom
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -20,7 +20,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.leonardower.mymovie.common.nav.bottom.BottomNavItem
 import com.leonardower.mymovie.ui.theme.DarkBg
 import com.leonardower.mymovie.ui.theme.GrayBg
 import com.leonardower.mymovie.ui.theme.LightGray
