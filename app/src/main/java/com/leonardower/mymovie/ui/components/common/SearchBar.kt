@@ -12,10 +12,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -31,6 +34,8 @@ fun SearchBar(
     placeholder: String = "Поиск фильмов, сериалов, аниме...",
     onSearch: () -> Unit = {}
 ) {
+    var inputText by remember { mutableStateOf(query) }
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -53,8 +58,11 @@ fun SearchBar(
             Spacer(modifier = Modifier.width(8.dp))
 
             BasicTextField(
-                value = query,
-                onValueChange = onQueryChange,
+                value = inputText,
+                onValueChange = { newValue ->
+                    inputText = newValue
+                    onQueryChange(newValue)
+                },
                 modifier = Modifier.weight(1f),
                 textStyle = MaterialTheme.typography.bodyMedium.copy(color = LightGray),
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),

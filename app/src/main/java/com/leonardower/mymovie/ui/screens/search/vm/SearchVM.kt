@@ -1,5 +1,6 @@
 package com.leonardower.mymovie.ui.screens.search.vm
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.leonardower.mymovie.common.nav.AppNavigation
@@ -42,7 +43,6 @@ class SearchVM(
             .debounce(300) // Дебаунс 300ms
             .distinctUntilChanged()
             .onEach { query ->
-                _uiState.update { it.copy(searchQuery = query) }
                 performSearch(query)
             }
             .launchIn(viewModelScope)
@@ -50,6 +50,9 @@ class SearchVM(
 
     fun onSearchQueryChanged(query: String) {
         searchQuery.value = query
+
+        // Обновляем UI состояние только если запрос изменился
+        _uiState.update { it.copy(searchQuery = query) }
     }
 
     private fun performSearch(query: String) {
@@ -65,7 +68,7 @@ class SearchVM(
                 // Поиск фильмов
                 val films = filmManager.searchFilms(query)
 
-                // Поиск жанров (фильтруем локально, так как у GenreManager нет метода поиска)
+                // Поиск жанров (фильтруем локально)
                 val allGenres = genreManager.getAllGenres().first()
                 val genres = allGenres.filter { genre ->
                     genre.name.contains(query, ignoreCase = true)
@@ -106,7 +109,6 @@ class SearchVM(
     }
 }
 
-// Закрытый класс для представления результатов поиска
 sealed class SearchResult {
     data class FilmResult(val film: Film) : SearchResult()
     data class GenreResult(val genre: Genre) : SearchResult()

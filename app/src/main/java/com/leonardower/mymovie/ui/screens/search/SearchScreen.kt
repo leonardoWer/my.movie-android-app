@@ -47,7 +47,7 @@ fun SearchScreen(
         when {
             uiState.searchQuery.isNotEmpty() -> {
                 SearchResultContent(
-                    searchResults = uiState.searchResults,
+                    uiState = uiState,
                     onFilmClick = viewModel::onFilmClick,
                     onGenreClick = viewModel::onGenreClick
                 )
