@@ -51,13 +51,14 @@ fun FilmDetailScreen(
                 onBackClick = onBackClick
             )
         },
-    ) { _ ->
+    ) { pv ->
         FilmDetailContent(
             uiState = uiState,
             filmWithGenreNames = filmWithGenreNames,
             onRateClick = viewModel::onRateClick,
             onWatchLaterClick = viewModel::onWatchLaterClick,
         )
+        Modifier.padding(pv)
     }
 }
 
