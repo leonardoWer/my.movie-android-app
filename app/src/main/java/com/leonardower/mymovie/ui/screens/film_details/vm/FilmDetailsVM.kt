@@ -89,13 +89,23 @@ class FilmDetailVM(
         }
     }
 
-    fun onRateClick() {
-        // TODO: Открыть диалог оценки
+    fun rateFilm(rating: Int?) {
         _uiState.update { state ->
+            val isRated = (rating != null && rating != 0)
             state.copy(
-                isRated = !state.isRated,
-                rating = if (!state.isRated) 8f else null
+                rating = rating,
+                isRated = isRated
             )
+        }
+        if (rating != null) {
+            updateRating(rating)
+        }
+    }
+    private fun updateRating(newRating: Int) {
+        if (newRating != 0) {
+            viewModelScope.launch {
+                filmManager.updateRating(filmId, newRating)
+            }
         }
     }
 
@@ -127,6 +137,6 @@ data class FilmDetailUiState(
     val isLoading: Boolean = true,
     val error: String? = null,
     val isRated: Boolean = false,
-    val rating: Float? = null,
+    val rating: Int? = null,
     val isInWatchLater: Boolean = false
 )

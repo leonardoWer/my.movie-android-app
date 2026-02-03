@@ -66,7 +66,7 @@ fun FilmTile(
                         .align(Alignment.TopEnd)
                 ) {
                     Text(
-                        text = String.format("%.1f", rating),
+                        text = rating.toString(),
                         color = Color.White,
                         style = MaterialTheme.typography.bodySmall
                     )

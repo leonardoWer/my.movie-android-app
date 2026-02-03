@@ -10,6 +10,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -18,16 +21,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.leonardower.mymovie.R
-import com.leonardower.mymovie.common.helpers.FilmWithGenreNames
-import com.leonardower.mymovie.data.local.entities.Film
 import com.leonardower.mymovie.ui.components.common.RatingButton
 import com.leonardower.mymovie.ui.components.common.WatchLaterButton
-import com.leonardower.mymovie.ui.screens.film_details.vm.FilmDetailUiState
+import com.leonardower.mymovie.ui.components.dialog.RatingDialog
 import com.leonardower.mymovie.ui.screens.film_details.vm.FilmDetailVM
 import com.leonardower.mymovie.ui.screens.film_details.vm.FilmDetailVMFactory
 import com.leonardower.mymovie.ui.theme.DarkBg
@@ -42,9 +42,6 @@ fun FilmDetailScreen(
         factory = FilmDetailVMFactory.create(filmId)
     )
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-    val filmWithGenreNames by viewModel.filmWithGenreNames.collectAsState()
-
     Scaffold(
         topBar = {
             FilmDetailTopAppBar(
@@ -52,12 +49,7 @@ fun FilmDetailScreen(
             )
         },
     ) { pv ->
-        FilmDetailContent(
-            uiState = uiState,
-            filmWithGenreNames = filmWithGenreNames,
-            onRateClick = viewModel::onRateClick,
-            onWatchLaterClick = viewModel::onWatchLaterClick,
-        )
+        FilmDetailContent(viewModel)
         Modifier.padding(pv)
     }
 }
@@ -89,13 +81,15 @@ private fun FilmDetailTopAppBar(
 
 @Composable
 private fun FilmDetailContent(
-    uiState: FilmDetailUiState,
-    filmWithGenreNames: FilmWithGenreNames?,
-    onRateClick: () -> Unit,
-    onWatchLaterClick: () -> Unit,
+    viewModel: FilmDetailVM,
     modifier: Modifier = Modifier
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+    val filmWithGenreNames by viewModel.filmWithGenreNames.collectAsState()
+
     val film = filmWithGenreNames?.film
+
+    var showRatingDialog by remember { mutableStateOf(false) }
 
     Box(
         modifier = modifier.fillMaxSize()
@@ -187,13 +181,13 @@ private fun FilmDetailContent(
                             backgroundColor = Color.Transparent,
                             isRated = uiState.isRated,
                             rating = uiState.rating,
-                            onClick = { onRateClick() }
+                            onClick = { showRatingDialog = true }
                         )
 
                         WatchLaterButton(
                             backgroundColor = Color.Transparent,
                             isInWatchLater = uiState.isInWatchLater,
-                            onClick = { onWatchLaterClick() }
+                            onClick = { viewModel.onWatchLaterClick() }
                         )
                     }
                 }
@@ -232,28 +226,13 @@ private fun FilmDetailContent(
             }
         }
     }
-}
 
-@Preview
-@Composable
-private fun Preview() {
-    Column(
-        modifier = Modifier
-            .background(DarkBg)
-    ) {
-        FilmDetailTopAppBar {}
-        FilmDetailContent(
-            FilmDetailUiState(),
-            FilmWithGenreNames(
-                film = Film(
-                    0,
-                    "Тест",
-                    "",
-                    "Lorem ipsum solum dor"
-                ),
-                genreNames = listOf("Драма, Комедия")
-            ),
-            {}, {}
-        )
-    }
+    RatingDialog(
+        isVisible = showRatingDialog,
+        onDismiss = { showRatingDialog = false },
+        onConfirm = { rating -> viewModel.rateFilm(rating) },
+        filmTitle = film?.title,
+        filmPosterUrl = film?.posterUrl,
+        currentRatingInt = uiState.rating
+    )
 }

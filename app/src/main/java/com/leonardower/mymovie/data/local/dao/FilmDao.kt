@@ -54,7 +54,7 @@ interface FilmDao {
     suspend fun updateWatchLaterStatus(filmId: Long, isWatchLater: Boolean)
 
     @Query("UPDATE films SET user_rating = :rating WHERE id = :filmId")
-    suspend fun updateRating(filmId: Long, rating: Float?)
+    suspend fun updateRating(filmId: Long, rating: Int?)
 
     @Query("UPDATE films SET is_viewed = :isViewed, view_date = :viewDate WHERE id = :filmId")
     suspend fun updateViewedStatus(filmId: Long, isViewed: Boolean, viewDate: Long)

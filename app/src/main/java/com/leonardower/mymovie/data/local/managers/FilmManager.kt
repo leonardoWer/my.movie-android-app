@@ -59,7 +59,7 @@ class FilmManager(
     }
 
     // Обновление рейтинга
-    suspend fun updateRating(filmId: Long, rating: Float?) {
+    suspend fun updateRating(filmId: Long, rating: Int?) {
         filmDao.updateRating(filmId, rating)
     }
 

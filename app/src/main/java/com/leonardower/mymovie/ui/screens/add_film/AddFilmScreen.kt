@@ -338,7 +338,7 @@ private fun AddFilmContent(
         onConfirm = { rating -> viewModel.rateFilm(rating) },
         filmTitle = uiState.title,
         filmPosterUrl = uiState.posterUrl,
-        currentRatingInt = uiState.rating?.toInt()
+        currentRatingInt = uiState.rating
     )
 }
 

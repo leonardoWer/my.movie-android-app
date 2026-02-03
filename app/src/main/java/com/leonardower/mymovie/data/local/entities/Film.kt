@@ -28,7 +28,7 @@ data class Film(
     val description: String? = null,
 
     @ColumnInfo(name = "user_rating")
-    val userRating: Float? = null,
+    val userRating: Int? = null,
 
     @ColumnInfo(name = "duration_minutes")
     val durationMinutes: Int? = null,

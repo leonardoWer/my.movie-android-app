@@ -248,13 +248,9 @@ class AddFilmVM(
 
     fun rateFilm(rating: Int?) {
         _uiState.update { state ->
-            val newRating = if (state.rating == null) {
-                return
-            } else rating?.toFloat()
-
-            val isRated = newRating != null
+            val isRated = (rating != null && rating != 0)
             state.copy(
-                rating = newRating,
+                rating = rating,
                 isRated = isRated
             )
         }
@@ -328,7 +324,7 @@ data class AddFilmUiState(
     val title: String = "",
     val posterUrl: String = "",
     val description: String = "",
-    val rating: Float? = null,
+    val rating: Int? = null,
     val isRated: Boolean = false,
     val isInWatchLater: Boolean = false,
 
