@@ -84,7 +84,7 @@ private fun FullScreenRatingContent(
     // Цвета в зависимости от оценки
     val color = when (selectedRating) {
         in 1..4 -> ErrorRed
-        in 5..6 -> Color.Yellow
+        in 5..6 -> Yellow
         in 7..10 -> SuccessGreen
         else -> Color.White
     }
