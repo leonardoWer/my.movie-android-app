@@ -246,9 +246,12 @@ class AddFilmVM(
         }
     }
 
-    fun onRateClick() {
+    fun rateFilm(rating: Int?) {
         _uiState.update { state ->
-            val newRating = if (state.rating == null) 5f else null
+            val newRating = if (state.rating == null) {
+                return
+            } else rating?.toFloat()
+
             val isRated = newRating != null
             state.copy(
                 rating = newRating,
@@ -263,7 +266,6 @@ class AddFilmVM(
             )
         }
     }
-
 
     fun onSaveClick(onSuccess: () -> Unit) {
         viewModelScope.launch {
@@ -303,6 +305,7 @@ class AddFilmVM(
         }
     }
 
+
     private fun validateForm(state: AddFilmUiState) {
         val titleValid = state.title.isNotBlank()
         val posterValid = state.posterUrl.isNotBlank()
@@ -317,6 +320,8 @@ class AddFilmVM(
             )
         }
     }
+
+
 }
 
 data class AddFilmUiState(

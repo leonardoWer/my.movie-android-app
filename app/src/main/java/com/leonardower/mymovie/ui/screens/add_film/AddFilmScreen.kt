@@ -45,6 +45,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -59,6 +62,7 @@ import com.leonardower.mymovie.ui.components.common.GrayTextField
 import com.leonardower.mymovie.ui.components.common.IconState
 import com.leonardower.mymovie.ui.components.common.RatingButton
 import com.leonardower.mymovie.ui.components.common.WatchLaterButton
+import com.leonardower.mymovie.ui.components.dialog.RatingDialog
 import com.leonardower.mymovie.ui.components.tiles.genre.GenreChip
 import com.leonardower.mymovie.ui.screens.add_film.vm.AddFilmUiState
 import com.leonardower.mymovie.ui.screens.add_film.vm.AddFilmVM
@@ -138,6 +142,8 @@ private fun AddFilmContent(
     viewModel: AddFilmVM,
     modifier: Modifier = Modifier
 ) {
+    var showRatingDialog by remember { mutableStateOf(false) }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -313,7 +319,7 @@ private fun AddFilmContent(
                 RatingButton(
                     isRated = uiState.isRated,
                     rating = uiState.rating,
-                    onClick = { viewModel.onRateClick() }
+                    onClick = { showRatingDialog = true }
                 )
             }
             item {
@@ -324,6 +330,16 @@ private fun AddFilmContent(
             }
         }
     }
+
+    // Диалог
+    RatingDialog(
+        isVisible = showRatingDialog,
+        onDismiss = { showRatingDialog = false },
+        onConfirm = { rating -> viewModel.rateFilm(rating) },
+        filmTitle = uiState.title,
+        filmPosterUrl = uiState.posterUrl,
+        currentRatingInt = uiState.rating?.toInt()
+    )
 }
 
 @Preview

@@ -22,19 +22,19 @@ fun GenreTile(
     genre: Genre,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
-    cardSize: Dp = 50.dp,
+    tileSize: Dp = 60.dp,
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(cardSize)
+            .height(tileSize)
             .clickable {onClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier
-                .height(cardSize)
-                .width(cardSize)
+                .height(tileSize)
+                .width(tileSize)
                 .background(GrayButton)
         ) {
             AsyncImage(

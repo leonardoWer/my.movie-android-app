@@ -33,6 +33,7 @@ fun GrayButton(
     activeBackgroundColor: Color = GrayButtonColor,
     enabled: Boolean = true,
     height: Dp = 42.dp,
+    alignTextCenter: Boolean = false,
     contentPadding: PaddingValues = PaddingValues(horizontal = 12.dp)
 ) {
     val currentIconTint = if (isActive && enabled) activeIconTint else iconTint
@@ -54,7 +55,7 @@ fun GrayButton(
     ) {
         Row(
             modifier = modifier,
-            horizontalArrangement = Arrangement.Start,
+            horizontalArrangement = if (!alignTextCenter) Arrangement.Start else Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Иконка из ресурса или ImageVector
