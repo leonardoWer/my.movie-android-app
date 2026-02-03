@@ -9,13 +9,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.leonardower.mymovie.R
 import com.leonardower.mymovie.ui.theme.LightGray
 import com.leonardower.mymovie.ui.theme.OrangePrimary
-import com.leonardower.mymovie.ui.theme.GrayButton as GrayButtonColor
 
 @Composable
 fun WatchLaterButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    backgroundColor: Color = GrayButtonColor,
+    backgroundColor: Color = Color.Transparent,
     isInWatchLater: Boolean = false,
     enabled: Boolean = true
 ) {

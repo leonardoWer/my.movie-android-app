@@ -50,6 +50,7 @@ fun GrayTextField(
     onTrailingIconClick: (() -> Unit)? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
+    onFocusChange: ((Boolean) -> Unit)? = null,
     singleLine: Boolean = true,
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     minHeight: Dp = 42.dp,
@@ -62,6 +63,10 @@ fun GrayTextField(
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
     val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(isFocused) {
+        onFocusChange?.invoke(isFocused)
+    }
 
     // Цвет обводки
     val borderColor = when {
@@ -104,56 +109,58 @@ fun GrayTextField(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 8.dp)
                     .run {
                         if (singleLine) {
                             this.height(minHeight)
                         } else {
                             this.heightIn(min = minHeight)
                         }
-                    },
+                    }
+                    .padding(8.dp),
                 verticalAlignment = if (singleLine) Alignment.CenterVertically else Alignment.Top
             ) {
                 // Leading Icon
                 if (leadingIcon != null) {
-                    Box(
-                        modifier = Modifier.size(20.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        when (leadingIconState) {
-                            IconState.Loading -> {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.size(16.dp),
-                                    strokeWidth = 2.dp,
-                                    color = OrangePrimary
-                                )
-                            }
+                    if (leadingIconState !is IconState.Invisible) {
+                        Box(
+                            modifier = Modifier.size(20.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            when (leadingIconState) {
+                                IconState.Loading -> {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(16.dp),
+                                        strokeWidth = 2.dp,
+                                        color = OrangePrimary
+                                    )
+                                }
 
-                            IconState.Success -> {
-                                Icon(
-                                    imageVector = Icons.Default.Check,
-                                    contentDescription = "Успешно",
-                                    tint = SuccessGreen,
-                                    modifier = Modifier.size(16.dp)
-                                )
-                            }
+                                IconState.Success -> {
+                                    Icon(
+                                        imageVector = Icons.Default.Check,
+                                        contentDescription = "Успешно",
+                                        tint = SuccessGreen,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                }
 
-                            IconState.Error -> {
-                                Icon(
-                                    imageVector = Icons.Default.Close,
-                                    contentDescription = "Ошибка",
-                                    tint = MaterialTheme.colorScheme.error,
-                                    modifier = Modifier.size(16.dp)
-                                )
-                            }
+                                IconState.Error -> {
+                                    Icon(
+                                        imageVector = Icons.Default.Close,
+                                        contentDescription = "Ошибка",
+                                        tint = MaterialTheme.colorScheme.error,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                }
 
-                            else -> {
-                                Icon(
-                                    imageVector = leadingIcon,
-                                    contentDescription = null,
-                                    tint = LightGray,
-                                    modifier = Modifier.size(20.dp)
-                                )
+                                else -> {
+                                    Icon(
+                                        imageVector = leadingIcon,
+                                        contentDescription = null,
+                                        tint = LightGray,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
                             }
                         }
                     }
@@ -162,16 +169,9 @@ fun GrayTextField(
                 // Текстовое поле
                 Box(
                     modifier = Modifier
-                        .run {
-                            if (singleLine) {
-                                this.height(minHeight)
-                            } else {
-                                this.heightIn(min = minHeight)
-                            }
-                        }
                         .weight(1f)
                         .padding(
-                            start = if (leadingIcon != null) 8.dp else 0.dp,
+                            start = if (leadingIcon != null && leadingIconState !is IconState.Invisible) 8.dp else 0.dp,
                             end = if (trailingIcon != null) 8.dp else 0.dp,
                         ),
                     contentAlignment = Alignment.CenterStart
@@ -298,11 +298,20 @@ fun CustomTextFieldPreview() {
                 errorMessage = "Ошибка"
             )
 
-            // Пример в состоянии ошибки
             GrayTextField(
                 modifier = Modifier
                     .fillMaxWidth(),
                 value = "",
+                onValueChange = {},
+                placeholder = "Описание",
+                leadingIcon = Icons.Default.Search,
+                leadingIconState = IconState.Invisible
+            )
+
+            GrayTextField(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                value = "123123",
                 onValueChange = {},
                 placeholder = "Описание",
                 singleLine = false,
@@ -314,6 +323,7 @@ fun CustomTextFieldPreview() {
 
 // Состояния иконки
 sealed class IconState {
+    data object Invisible : IconState()
     data object None : IconState()
     data object Loading : IconState()
     data object Success : IconState()

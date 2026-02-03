@@ -7,7 +7,6 @@ import com.leonardower.mymovie.data.local.entities.Genre
 import com.leonardower.mymovie.data.local.managers.FilmManager
 import com.leonardower.mymovie.data.local.managers.GenreManager
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -15,7 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.HttpURLConnection
 
-@OptIn(FlowPreview::class)
+
 class AddFilmVM(
     private val filmManager: FilmManager,
     private val genreManager: GenreManager,
@@ -38,16 +37,17 @@ class AddFilmVM(
         viewModelScope.launch {
             allGenresFlow.collect { genres ->
                 _uiState.update { state ->
-                    state.copy(allGenres = genres)
+                    state.copy(
+                        allGenres = genres,
+                        genreSuggestions = getAllGenreNames()
+                    )
                 }
             }
         }
 
         // Следим за изменениями в UI для валидации
         viewModelScope.launch {
-            _uiState
-                .debounce(300) // Дебаунс для предотвращения слишком частой валидации
-                .collect { validateForm(it) }
+            _uiState.collect { validateForm(it) }
         }
     }
 
@@ -144,21 +144,24 @@ class AddFilmVM(
         _uiState.update { state ->
             state.copy(
                 genreInput = input,
-                showGenreSuggestions = input.isNotEmpty()
             )
         }
         updateGenreSuggestions(input)
     }
+    fun toggleGenreSuggestionsVisibility(visibility: Boolean) {
+        _uiState.update {
+            it.copy(showGenreSuggestions = visibility)
+        }
+    }
     private fun updateGenreSuggestions(input: String) {
         if (input.isEmpty()) {
-            _uiState.update { it.copy(genreSuggestions = emptyList()) }
+            _uiState.update { it.copy(genreSuggestions = getAllGenreNames()) }
             return
         }
-
         suggestionsJob?.cancel()
 
         suggestionsJob = viewModelScope.launch {
-            delay(200)
+            delay(100)
 
             val currentState = _uiState.value
             val allGenres = currentState.allGenres
@@ -178,6 +181,11 @@ class AddFilmVM(
                     showGenreSuggestions = filtered.isNotEmpty()
                 )
             }
+        }
+    }
+    private fun getAllGenreNames(): List<String> {
+        return allGenresFlow.value.map {
+            it.name
         }
     }
     fun onGenreSelect(genreName: String) {
@@ -304,15 +312,13 @@ class AddFilmVM(
 
     private fun validateForm(state: AddFilmUiState) {
         val titleValid = state.title.isNotBlank()
-        val posterValid = state.posterUrl.isNotBlank()
         val genresValid = state.selectedGenres.isNotEmpty()
 
         _uiState.update {
             it.copy(
                 titleError = if (!titleValid) "Введите название" else null,
-                posterError = if (!posterValid) "Введите ссылку на постер" else null,
                 genresError = if (!genresValid) "Выберите хотя бы один жанр" else null,
-                isFormValid = titleValid && posterValid && genresValid
+                isFormValid = titleValid && genresValid
             )
         }
     }
