@@ -20,6 +20,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.leonardower.mymovie.common.nav.AppNavigation
+import com.leonardower.mymovie.common.nav.Screen
 import com.leonardower.mymovie.ui.theme.DarkBg
 import com.leonardower.mymovie.ui.theme.GrayBg
 import com.leonardower.mymovie.ui.theme.LightGray
@@ -63,16 +65,12 @@ fun BottomNavigationBar(
                         .padding(0.dp),
                     selected = isSelected,
                     onClick = {
-                        if (currentRoute != item.route) {
-                            navController?.navigate(item.route) {
-                                // Очищаем back stack до корня
-                                popUpTo(navController.graph.startDestinationId) {
-                                    saveState = true
-                                }
-                                // Избегаем дублирования экранов
-                                launchSingleTop = true
-                                // Восстанавливаем состояние
-                                restoreState = true
+                        when (item) {
+                            is BottomNavItem.Home -> {
+                                AppNavigation.manager.navigateToHome()
+                            }
+                            is BottomNavItem.Search -> {
+                                AppNavigation.manager.navigateToSearch()
                             }
                         }
                     },
