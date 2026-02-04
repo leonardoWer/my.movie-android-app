@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.leonardower.mymovie.data.local.entities.Film
 import com.leonardower.mymovie.ui.theme.DarkBg
-import com.leonardower.mymovie.ui.theme.GrayButton
+import com.leonardower.mymovie.ui.theme.GrayButtonColor
 
 sealed class FilmTileSize(val width: Dp, val height: Dp) {
     data object Large : FilmTileSize(180.dp, 300.dp)
@@ -47,7 +47,7 @@ fun FilmTile(
             modifier = Modifier
                 .width(size.width)
                 .height(size.height)
-                .background(DarkBg)
+                .background(GrayButtonColor)
         ) {
             AsyncImage(
                 model = film.posterUrl,
@@ -61,7 +61,7 @@ fun FilmTile(
                 Box(
                     modifier = Modifier
                         .padding(8.dp)
-                        .background(GrayButton)
+                        .background(GrayButtonColor)
                         .padding(horizontal = 6.dp, vertical = 3.dp)
                         .align(Alignment.TopEnd)
                 ) {

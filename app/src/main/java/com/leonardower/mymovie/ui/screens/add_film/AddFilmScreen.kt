@@ -41,7 +41,7 @@ import com.leonardower.mymovie.ui.screens.add_film.vm.AddFilmVM
 import com.leonardower.mymovie.ui.screens.add_film.vm.AddFilmViewModelFactory
 import com.leonardower.mymovie.ui.screens.add_film.vm.PosterState
 import com.leonardower.mymovie.ui.theme.GrayBg
-import com.leonardower.mymovie.ui.theme.GrayButton
+import com.leonardower.mymovie.ui.theme.GrayButtonColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -245,7 +245,7 @@ private fun SelectGenreComponent(
                     HorizontalDivider(
                         modifier = Modifier.fillMaxWidth(),
                         thickness = 0.8.dp,
-                        color = GrayButton
+                        color = GrayButtonColor
                     )
                 }
             }

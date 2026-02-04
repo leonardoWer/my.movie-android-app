@@ -12,7 +12,7 @@ private val DarkColorScheme = darkColorScheme(
     onBackground = Color.White,
     primary = OrangePrimary,
     onPrimary = Color.White,
-    surface = GrayButton,
+    surface = GrayButtonColor,
     error = ErrorRed,
     onError = Color.White
 )

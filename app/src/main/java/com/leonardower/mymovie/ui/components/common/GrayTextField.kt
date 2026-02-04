@@ -33,7 +33,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.leonardower.mymovie.ui.theme.GrayButton
+import com.leonardower.mymovie.ui.theme.GrayButtonColor
 import com.leonardower.mymovie.ui.theme.LightGray
 import com.leonardower.mymovie.ui.theme.OrangePrimary
 import com.leonardower.mymovie.ui.theme.SuccessGreen
@@ -73,7 +73,7 @@ fun GrayTextField(
         (isError && isFocused) -> MaterialTheme.colorScheme.error
         (showSuccessBorder && isFocused) -> SuccessGreen
         isFocused -> OrangePrimary
-        else -> GrayButton
+        else -> GrayButtonColor
     }
 
     // Толщина обводки
@@ -97,7 +97,7 @@ fun GrayTextField(
                     color = borderColor,
                     shape = RectangleShape
                 )
-                .background(GrayButton)
+                .background(GrayButtonColor)
                 .clickable(
                     enabled = enabled,
                     interactionSource = interactionSource,

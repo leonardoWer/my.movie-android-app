@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.leonardower.mymovie.data.local.entities.Genre
-import com.leonardower.mymovie.ui.theme.GrayButton
+import com.leonardower.mymovie.ui.theme.GrayButtonColor
 
 @Composable
 fun GenreTile(
@@ -35,7 +35,7 @@ fun GenreTile(
             modifier = Modifier
                 .height(tileSize)
                 .width(tileSize)
-                .background(GrayButton)
+                .background(GrayButtonColor)
         ) {
             AsyncImage(
                 model = genre.iconUrl,

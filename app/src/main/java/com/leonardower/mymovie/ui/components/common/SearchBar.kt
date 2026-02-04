@@ -22,7 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import com.leonardower.mymovie.ui.theme.GrayButton
+import com.leonardower.mymovie.ui.theme.GrayButtonColor
 import com.leonardower.mymovie.ui.theme.LightGray
 
 
@@ -41,7 +41,7 @@ fun SearchBar(
             .fillMaxWidth()
             .height(56.dp)
             .clip(RoundedCornerShape(0.dp))
-            .background(GrayButton)
+            .background(GrayButtonColor)
             .padding(horizontal = 16.dp),
         contentAlignment = Alignment.CenterStart
     ) {

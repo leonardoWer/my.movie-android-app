@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.leonardower.mymovie.ui.theme.LightGray
 import com.leonardower.mymovie.ui.theme.OrangePrimary
-import com.leonardower.mymovie.ui.theme.GrayButton as GrayButtonColor
+import com.leonardower.mymovie.ui.theme.GrayButtonColor as GrayButtonColor
 
 @Composable
 fun GrayButton(
