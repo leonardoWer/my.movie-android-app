@@ -13,11 +13,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.leonardower.mymovie.common.nav.bottom.BottomNavigationBar
 import com.leonardower.mymovie.common.nav.MainNav
 import com.leonardower.mymovie.data.local.di.AppModule
+import com.leonardower.mymovie.ui.screens.splash.SplashScreen
 import com.leonardower.mymovie.ui.theme.MyMovieTheme
 
 class MainActivity : ComponentActivity() {
@@ -39,21 +44,28 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MyMovieApp() {
     val navController = rememberNavController()
+    var showSplash by remember { mutableStateOf(true) }
 
-    Scaffold(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .systemBarsPadding(),
-        bottomBar = {
-            BottomNavigationBar(navController = navController)
-        },
-    ) { paddingValues ->
-        MainNav(
-            navController = navController,
-            modifier = Modifier
-                .padding(paddingValues)
-                .systemBarsPadding()
+    if (showSplash) {
+        SplashScreen(
+            onLoadingComplete = { showSplash = false }
         )
+    } else {
+        Scaffold(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .systemBarsPadding(),
+            bottomBar = {
+                BottomNavigationBar(navController = navController)
+            },
+        ) { paddingValues ->
+            MainNav(
+                navController = navController,
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .systemBarsPadding()
+            )
+        }
     }
 }
 

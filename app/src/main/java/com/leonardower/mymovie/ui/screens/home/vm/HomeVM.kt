@@ -20,12 +20,12 @@ class HomeVM(
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     // Поток фильмов "Буду смотреть"
-    val watchLaterFilms: StateFlow<List<FilmWithGenreNames>> = this
+    val watchLaterFilms: StateFlow<List<FilmWithGenreNames>?> = this
         .getWatchLaterFilmsWithGenreNames()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyList()
+            initialValue = null
         )
 
     // Поток всех жанров
@@ -38,12 +38,12 @@ class HomeVM(
         )
 
     // Фильмы по жанрам
-    val filmsByGenre: StateFlow<Map<Genre, List<FilmWithGenreNames>>> = this
+    val filmsByGenre: StateFlow<Map<Genre, List<FilmWithGenreNames>>?> = this
         .getFilmsGroupedByGenre()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyMap()
+            initialValue = null
         )
 
     init {
@@ -54,16 +54,29 @@ class HomeVM(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             try {
-                // Ждем загрузки хотя бы одного потока
-                allGenres.first()
-                watchLaterFilms.first()
-                _uiState.update { it.copy(isLoading = false, isEmpty = false) }
+                combine(
+                    watchLaterFilms.filterNotNull(),
+                    filmsByGenre.filterNotNull()
+                ) { watchLater, byGenre ->
+                    watchLater to byGenre
+                }.first()
+
+                // После получения данных проверяем, есть ли фильмы
+                val hasAnyFilms = watchLaterFilms.value?.isNotEmpty() == true ||
+                        filmsByGenre.value?.values?.any { it.isNotEmpty() } == true
+
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        isEmpty = !hasAnyFilms,
+                        error = null
+                    )
+                }
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = "Ошибка загрузки данных: ${e.message}",
-                        isEmpty = true
+                        error = "Ошибка загрузки: ${e.message}"
                     )
                 }
             }
@@ -76,7 +89,8 @@ class HomeVM(
                 filmsMap.mapValues { (_, filmList) ->
                     getFilmsWithGenreNames(filmList)
                 }
-        }
+            }
+            .catch { emit(emptyMap()) }
     }
 
     // Получение фильмов с названиями жанров
@@ -87,12 +101,14 @@ class HomeVM(
         }
     }
     private fun getWatchLaterFilmsWithGenreNames(): Flow<List<FilmWithGenreNames>> {
-        return filmManager.getWatchLaterFilms().map { films ->
-            films.map { film ->
-                val genreNames = genreManager.getGenreNamesForFilm(film.id)
-                FilmWithGenreNames(film, genreNames)
+        return filmManager.getWatchLaterFilms()
+            .map { films ->
+                films.map { film ->
+                    val genreNames = genreManager.getGenreNamesForFilm(film.id)
+                    FilmWithGenreNames(film, genreNames)
+                }
             }
-        }
+            .catch { emit(emptyList()) }
     }
 
     fun onFilmClick(filmId: Long) {

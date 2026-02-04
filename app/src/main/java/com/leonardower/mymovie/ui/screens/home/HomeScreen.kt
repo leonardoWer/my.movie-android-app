@@ -41,7 +41,6 @@ import com.leonardower.mymovie.ui.components.tiles.genre.GenreChip
 import com.leonardower.mymovie.ui.screens.home.vm.HomeUiState
 import com.leonardower.mymovie.ui.screens.home.vm.HomeVM
 import com.leonardower.mymovie.ui.screens.home.vm.HomeViewModelFactory
-import com.leonardower.mymovie.ui.theme.LightGray
 
 @Composable
 fun HomeScreen(
@@ -88,9 +87,9 @@ fun HomeScreen(
 fun HomeScreenContent(
     modifier: Modifier = Modifier,
     uiState: HomeUiState,
-    watchLaterFilms: List<FilmWithGenreNames>,
+    watchLaterFilms: List<FilmWithGenreNames>?,
     allGenres: List<Genre>,
-    filmsByGenre: Map<Genre, List<FilmWithGenreNames>>,
+    filmsByGenre: Map<Genre, List<FilmWithGenreNames>>?,
     onFilmClick: (Long) -> Unit = {},
     onGenreClick: (Long) -> Unit = {},
 
@@ -108,21 +107,16 @@ fun HomeScreenContent(
             modifier = Modifier.padding(horizontal = 16.dp)
         )
 
-        if (uiState.isEmpty) {
+
+        if (uiState.isLoading) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "Вы не добавили ни одного фильма",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = LightGray
-                )
+                CircularProgressIndicator()
             }
-        } else if (uiState.isLoading) {
-            CircularProgressIndicator()
         } else if (uiState.error != null) {
             Box(
                 modifier = Modifier
@@ -136,9 +130,18 @@ fun HomeScreenContent(
                     color = MaterialTheme.colorScheme.error
                 )
             }
+        } else if (uiState.isEmpty) {
+            Box(
+                modifier = Modifier
+                    .padding(vertical = 8.dp, horizontal = 16.dp)
+            ) {
+                AddFilmEmptyState(
+                    onClick = { AppNavigation.manager.navigateToAddFilm() }
+                )
+            }
         } else {
             // Секция "Буду смотреть"
-            if (watchLaterFilms.isNotEmpty()) {
+            if (watchLaterFilms?.isNotEmpty() == true) {
                 FilmList(
                     title = "Буду смотреть",
                     content = {
@@ -161,7 +164,7 @@ fun HomeScreenContent(
             }
 
             // Секция "Жанры"
-            if (allGenres.isNotEmpty() && filmsByGenre.isNotEmpty()) {
+            if (allGenres.isNotEmpty() && filmsByGenre?.isNotEmpty() == true) {
                 FilmList(
                     title = "Жанры",
                     content = {
@@ -182,39 +185,27 @@ fun HomeScreenContent(
             }
 
             // Секции по жанрам
-            if (filmsByGenre.isEmpty()) {
-                Box(
-                    modifier = Modifier
-                        .padding(vertical = 8.dp, horizontal = 16.dp)
-                ) {
-                    AddFilmEmptyState(
-                        onClick = { AppNavigation.manager.navigateToAddFilm() }
-                    )
-                }
-
-            } else {
-                filmsByGenre.forEach { (genre, films) ->
-                    if (films.isNotEmpty()) {
-                        FilmList(
-                            title = genre.name,
-                            content = {
-                                LazyRow(
-                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                    contentPadding = PaddingValues(horizontal = 16.dp)
-                                ) {
-                                    items(films.size) { index ->
-                                        val it = films[index]
-                                        FilmTile(
-                                            film = it.film,
-                                            filmGenreNames = it.genreNames,
-                                            size = FilmTileSize.Medium,
-                                            onClick = { onFilmClick(it.film.id) }
-                                        )
-                                    }
+            filmsByGenre?.forEach { (genre, films) ->
+                if (films.isNotEmpty()) {
+                    FilmList(
+                        title = genre.name,
+                        content = {
+                            LazyRow(
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                contentPadding = PaddingValues(horizontal = 16.dp)
+                            ) {
+                                items(films.size) { index ->
+                                    val it = films[index]
+                                    FilmTile(
+                                        film = it.film,
+                                        filmGenreNames = it.genreNames,
+                                        size = FilmTileSize.Medium,
+                                        onClick = { onFilmClick(it.film.id) }
+                                    )
                                 }
                             }
-                        )
-                    }
+                        }
+                    )
                 }
             }
         }
