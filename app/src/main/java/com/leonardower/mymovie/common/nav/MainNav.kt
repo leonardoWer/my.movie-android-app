@@ -14,6 +14,7 @@ import com.leonardower.mymovie.ui.screens.films_in_genre.FilmsInGenreScreen
 import com.leonardower.mymovie.ui.screens.film_details.FilmDetailScreen
 import com.leonardower.mymovie.ui.screens.home.HomeScreen
 import com.leonardower.mymovie.ui.screens.search.SearchScreen
+import com.leonardower.mymovie.ui.screens.watch_this.WatchThisScreen
 
 @Composable
 fun MainNav(
@@ -35,6 +36,10 @@ fun MainNav(
     ) {
         composable(Screen.Home.route) {
             HomeScreen()
+        }
+
+        composable(Screen.WatchThis.route) {
+            WatchThisScreen()
         }
 
         composable(Screen.Search.route) {

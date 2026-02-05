@@ -13,7 +13,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.leonardower.mymovie.R
 import com.leonardower.mymovie.ui.theme.LightGray
+import com.leonardower.mymovie.ui.theme.MyMovieTheme
 import com.leonardower.mymovie.ui.theme.OrangePrimary
 import com.leonardower.mymovie.ui.theme.GrayButtonColor as GrayButtonColor
 
@@ -75,16 +77,18 @@ fun GrayButton(
                 )
             }
 
-            if (iconResourceId != null || icon != null)
+            if ((iconResourceId != null || icon != null) && text.isNotEmpty())
                 Spacer(modifier = Modifier.width(8.dp))
 
-            Text(
-                text = text,
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontSize = 14.sp,
-                    color = if (enabled) textColor else textColor.copy(alpha = 0.5f)
+            if (text.isNotEmpty()) {
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontSize = 14.sp,
+                        color = if (enabled) textColor else textColor.copy(alpha = 0.5f)
+                    )
                 )
-            )
+            }
         }
     }
 }
@@ -92,8 +96,17 @@ fun GrayButton(
 @Preview
 @Composable
 private fun Preview() {
-    GrayButton(
-        text = "example",
-        onClick = {}
-    )
+    MyMovieTheme {
+        Column {
+            GrayButton(
+                text = "",
+                onClick = {},
+                iconResourceId = R.drawable.ico__star,
+            )
+            GrayButton(
+                text = "example",
+                onClick = {}
+            )
+        }
+    }
 }

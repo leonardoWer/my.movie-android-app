@@ -5,6 +5,7 @@ import androidx.navigation.navArgument
 
 sealed class Screen(val route: String) {
     data object Home : Screen("home")
+    data object WatchThis : Screen("watch_this")
     data object Search : Screen("search")
     data object FilmsInGenre : Screen("genre/{genreId}") {
         fun createRoute(genreId: Long) = "genre/$genreId"

@@ -16,6 +16,12 @@ class NavigationManager(
         }
     }
 
+    fun navigateToWatchThis() {
+        navController?.navigate(Screen.WatchThis.route) {
+            popUpTo(Screen.WatchThis.route) { inclusive = true }
+        }
+    }
+
     fun navigateToSearch() {
         navController?.navigate(Screen.Search.route) {
             popUpTo(Screen.Search.route) { inclusive = true }

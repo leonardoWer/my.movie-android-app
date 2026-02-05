@@ -33,7 +33,8 @@ fun BottomNavigationBar(
 ) {
     val items = listOf(
         BottomNavItem.Home,
-        BottomNavItem.Search
+        BottomNavItem.WatchThis,
+        BottomNavItem.Search,
     )
 
     Column(
@@ -68,6 +69,9 @@ fun BottomNavigationBar(
                         when (item) {
                             is BottomNavItem.Home -> {
                                 AppNavigation.manager.navigateToHome()
+                            }
+                            is BottomNavItem.WatchThis -> {
+                                AppNavigation.manager.navigateToWatchThis()
                             }
                             is BottomNavItem.Search -> {
                                 AppNavigation.manager.navigateToSearch()

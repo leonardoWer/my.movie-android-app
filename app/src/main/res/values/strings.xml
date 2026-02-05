@@ -2,6 +2,7 @@
     <string name="app_name">my.movie</string>
 
     <string name="home">Главная</string>
+    <string name="watch_this">Что посмотреть</string>
     <string name="search">Поиск</string>
 
     <string name="go_back">Вернуться назад</string>

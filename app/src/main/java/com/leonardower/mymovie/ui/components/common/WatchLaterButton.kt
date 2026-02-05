@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.leonardower.mymovie.R
+import com.leonardower.mymovie.ui.theme.GrayBg
 import com.leonardower.mymovie.ui.theme.LightGray
 import com.leonardower.mymovie.ui.theme.OrangePrimary
 
@@ -14,6 +15,7 @@ import com.leonardower.mymovie.ui.theme.OrangePrimary
 fun WatchLaterButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    text: String = stringResource(R.string.watch_later),
     backgroundColor: Color = Color.Transparent,
     isInWatchLater: Boolean = false,
     enabled: Boolean = true
@@ -25,7 +27,7 @@ fun WatchLaterButton(
     }
 
     GrayButton(
-        text = stringResource(R.string.watch_later),
+        text = text,
         onClick = onClick,
         modifier = modifier,
         backgroundColor = backgroundColor,
@@ -42,6 +44,12 @@ fun WatchLaterButton(
 @Composable
 private fun Preview() {
     Column {
+        WatchLaterButton(
+            onClick = {},
+            isInWatchLater = false,
+            backgroundColor = GrayBg,
+            text = ""
+        )
         WatchLaterButton(
             onClick = {},
             isInWatchLater = false
