@@ -26,6 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.leonardower.mymovie.common.nav.AppNavigation
 import com.leonardower.mymovie.data.local.entities.Film
 import com.leonardower.mymovie.ui.components.common.GrayButton
 import com.leonardower.mymovie.ui.components.common.WatchLaterButton
@@ -97,9 +98,11 @@ private fun WatchThisScreenContent(
                     CircularProgressIndicator()
                 }
             }
-        } else if (uiState.filmsEmpty && uiState.filmOfTheDayEmpty) {
+        } else if (uiState.filmsEmpty) {
             item {
-                AddFilmEmptyState({})
+                AddFilmEmptyState(
+                    { AppNavigation.manager.navigateToAddFilm() }
+                )
             }
         } else {
             // Фильм дня
