@@ -75,13 +75,12 @@ private fun WatchThisScreenContent(
     viewModel: WatchThisVM
 ) {
     LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(24.dp)
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
             Text(
+                modifier = Modifier.padding(horizontal = 16.dp),
                 text = "Что посмотреть",
                 style = MaterialTheme.typography.displayLarge,
                 color = MaterialTheme.colorScheme.onBackground
