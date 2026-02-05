@@ -13,24 +13,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.AsyncImage
 import com.leonardower.mymovie.R
 import com.leonardower.mymovie.ui.components.common.RatingButton
 import com.leonardower.mymovie.ui.components.common.WatchLaterButton
 import com.leonardower.mymovie.ui.components.dialog.RatingDialog
+import com.leonardower.mymovie.ui.components.tiles.film.FilmDetail
 import com.leonardower.mymovie.ui.screens.film_details.vm.FilmDetailVM
 import com.leonardower.mymovie.ui.screens.film_details.vm.FilmDetailVMFactory
-import com.leonardower.mymovie.ui.theme.DarkBg
 import com.leonardower.mymovie.ui.theme.GrayBg
 import com.leonardower.mymovie.ui.theme.LightGray
 
@@ -101,95 +96,53 @@ private fun FilmDetailContent(
                 .fillMaxSize()
                 .verticalScroll(scrollState)
         ) {
-            // Постер с градиентным затемнением
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height((LocalConfiguration.current.screenHeightDp * 0.7).dp)
-                    .background(GrayBg)
+            FilmDetail(
+                title = film?.title,
+                posterUrl = film?.posterUrl,
             ) {
-                // Постер фильма
-                AsyncImage(
-                    model = film?.posterUrl,
-                    contentDescription = film?.title,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
+                // Название фильма
+                Text(
+                    text = film?.title ?: "Без названия",
+                    style = MaterialTheme.typography.displayLarge,
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
                 )
 
-                // Градиентное затемнение снизу
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    Color.Transparent,
-                                    Color.Transparent,
-                                    DarkBg.copy(alpha = 0.3f),
-                                    DarkBg.copy(alpha = 0.5f),
-                                    DarkBg.copy(alpha = 0.8f),
-                                    DarkBg.copy(alpha = 0.9f),
-                                    DarkBg
-                                ),
-                                startY = 0f,
-                                endY = Float.POSITIVE_INFINITY
-                            )
-                        )
-                )
+                Spacer(modifier = Modifier.height(16.dp))
 
-                // Информация о фильме поверх постера
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 24.dp)
-                        .padding(bottom = 16.dp),
-                    verticalArrangement = Arrangement.Bottom,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    // Название фильма
+                // Жанры
+                val genreNames = filmWithGenreNames?.genreNames ?: emptyList()
+                if (genreNames.isNotEmpty()) {
                     Text(
-                        text = film?.title ?: "Без названия",
-                        style = MaterialTheme.typography.displayLarge,
-                        color = Color.White,
+                        text = genreNames.joinToString(", "),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = LightGray,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
                     )
+                }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
-                    // Жанры
-                    val genreNames = filmWithGenreNames?.genreNames ?: emptyList()
-                    if (genreNames.isNotEmpty()) {
-                        Text(
-                            text = genreNames.joinToString(", "),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = LightGray,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
+                // Рейтинг и буду смотреть
+                Row(
+                    modifier = Modifier
+                        .height(42.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    RatingButton(
+                        backgroundColor = Color.Transparent,
+                        isRated = uiState.isRated,
+                        rating = uiState.rating,
+                        onClick = { showRatingDialog = true }
+                    )
 
-                    Spacer(modifier = Modifier.height(32.dp))
-
-                    // Рейтинг и буду смотреть
-                    Row(
-                        modifier = Modifier
-                            .height(42.dp),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        RatingButton(
-                            backgroundColor = Color.Transparent,
-                            isRated = uiState.isRated,
-                            rating = uiState.rating,
-                            onClick = { showRatingDialog = true }
-                        )
-
-                        WatchLaterButton(
-                            backgroundColor = Color.Transparent,
-                            isInWatchLater = uiState.isInWatchLater,
-                            onClick = { viewModel.onWatchLaterClick() }
-                        )
-                    }
+                    WatchLaterButton(
+                        backgroundColor = Color.Transparent,
+                        isInWatchLater = uiState.isInWatchLater,
+                        onClick = { viewModel.onWatchLaterClick() }
+                    )
                 }
             }
 
