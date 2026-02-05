@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -21,7 +20,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.leonardower.mymovie.data.local.entities.Film
-import com.leonardower.mymovie.ui.theme.DarkBg
+import com.leonardower.mymovie.ui.components.item.RatingItem
 import com.leonardower.mymovie.ui.theme.GrayButtonColor
 
 sealed class FilmTileSize(val width: Dp, val height: Dp) {
@@ -56,20 +55,9 @@ fun FilmTile(
                 contentScale = ContentScale.Crop
             )
 
-            // TODO: Добавить кастомное изображение как у кинопоиска
             film.userRating?.let { rating ->
-                Box(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .background(GrayButtonColor)
-                        .padding(horizontal = 6.dp, vertical = 3.dp)
-                        .align(Alignment.TopEnd)
-                ) {
-                    Text(
-                        text = rating.toString(),
-                        color = Color.White,
-                        style = MaterialTheme.typography.bodySmall
-                    )
+                Box(modifier.padding(4.dp)) {
+                    RatingItem(rating)
                 }
             }
         }
