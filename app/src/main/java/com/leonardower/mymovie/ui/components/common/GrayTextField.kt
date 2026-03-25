@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.leonardower.mymovie.ui.theme.GrayButtonColor
 import com.leonardower.mymovie.ui.theme.LightGray
+import com.leonardower.mymovie.ui.theme.MyMovieTheme
 import com.leonardower.mymovie.ui.theme.OrangePrimary
 import com.leonardower.mymovie.ui.theme.SuccessGreen
 
@@ -180,7 +181,9 @@ fun GrayTextField(
                         modifier = Modifier
                             .fillMaxWidth()
                             .focusRequester(focusRequester),
-                        textStyle = textStyle.merge(LocalTextStyle.current),
+                        textStyle = MaterialTheme.typography.titleSmall.copy(
+                            color = MaterialTheme.colorScheme.onBackground
+                        ),
                         value = value,
                         onValueChange = onValueChange,
                         cursorBrush = SolidColor(OrangePrimary),
@@ -243,7 +246,7 @@ fun GrayTextField(
 @Preview
 @Composable
 fun CustomTextFieldPreview() {
-    MaterialTheme {
+    MyMovieTheme {
         Column(
             modifier = Modifier
                 .fillMaxSize()
