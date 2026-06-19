@@ -54,7 +54,7 @@ fun FilmsInGenreScreen(
                 title = {
                     Text(
                         text = uiState.genre?.name ?: stringResource(R.string.genre),
-                        style = MaterialTheme.typography.displayLarge
+                        style = MaterialTheme.typography.titleLarge
                     )
                 },
                 navigationIcon = {
@@ -116,7 +116,7 @@ private fun FilmsInGenreList(
             ) {
                 Text(
                     text = stringResource(R.string.no_films_in_genre),
-                    color = LightGray
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
         }

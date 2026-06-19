@@ -2,7 +2,7 @@ package com.leonardower.mymovie.domain.genre
 
 data class GenreData(
     val genreName: String,
-    private val _previewImgFileNameList: List<String>,
+    private val _previewImgFileNameList: List<String> = getGenrePreviewImages(genreName),
 ) {
     val previewImgFileNamePair: Pair<String?, String?>
         get() = when {

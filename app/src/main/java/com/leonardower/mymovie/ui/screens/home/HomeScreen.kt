@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -175,12 +174,7 @@ fun HomeScreenContent(
                         ) {
                             items(allGenres) { genre ->
                                 GenreCard(
-                                    genreData = GenreData(
-                                        genreName = genre.name,
-                                        _previewImgFileNameList = listOf(
-                                            "drama__1.png", "drama__2.png"
-                                        )
-                                    ),
+                                    genreData = GenreData(genre.name),
                                     onClick = { onGenreClick(genre.id) }
                                 )
                             }
@@ -208,6 +202,7 @@ fun HomeScreenContent(
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         FilmList(
                             title = genre.name,
+                            onClick = { onGenreClick(genre.id) },
                             content = {
                                 LazyRow(
                                     horizontalArrangement = Arrangement.spacedBy(2.dp),

@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.leonardower.mymovie.data.local.entities.Genre
 import com.leonardower.mymovie.domain.genre.GenreData
+import com.leonardower.mymovie.domain.genre.getGenrePreviewImages
 import com.leonardower.mymovie.ui.components.tiles.genre.GenreCard
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -103,8 +104,7 @@ private fun GenreSelectionItem(
     ) {
         GenreCard(
             genreData = GenreData(
-                genreName = genre.name,
-                _previewImgFileNameList = getGenrePreviewImages(genre.name)
+                genreName = genre.name
             ),
             onClick = onToggle
         )
@@ -133,20 +133,5 @@ private fun GenreSelectionItem(
                 modifier = Modifier.size(20.dp)
             )
         }
-    }
-}
-
-// Вспомогательная функция для получения изображений жанра
-private fun getGenrePreviewImages(genreName: String): List<String> {
-    return when (genreName.lowercase()) {
-        "драма" -> listOf("drama__1.png", "drama__2.png")
-        "комедия" -> listOf("comedy__1.png", "comedy__2.png")
-        "боевик" -> listOf("action__1.png", "action__2.png")
-        "триллер" -> listOf("thriller__1.png", "thriller__2.png")
-        "ужасы" -> listOf("horror__1.png", "horror__2.png")
-        "фантастика" -> listOf("sci-fi__1.png", "sci-fi__2.png")
-        "приключения" -> listOf("adventure__1.png", "adventure__2.png")
-        "мелодрама" -> listOf("melodrama__1.png", "melodrama__2.png")
-        else -> listOf("default__1.png", "default__2.png")
     }
 }
