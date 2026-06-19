@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,8 +34,8 @@ fun GenreTile(
     ) {
         Box(
             modifier = Modifier
-                .height(tileSize)
-                .width(tileSize)
+                .size(tileSize)
+                .clip(MaterialTheme.shapes.medium)
                 .background(GrayButtonColor)
         ) {
             AsyncImage(
@@ -47,8 +48,8 @@ fun GenreTile(
 
         Text(
             text = genre.name,
-            style = MaterialTheme.typography.titleMedium,
-            color = Color.White,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
                 .padding(start = 16.dp)
         )
