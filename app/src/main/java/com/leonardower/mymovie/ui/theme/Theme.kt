@@ -9,12 +9,15 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val DarkColorScheme = darkColorScheme(
     background = DarkBg,
-    onBackground = Color.White,
+    onBackground = onBackgroundText,
     primary = OrangePrimary,
-    onPrimary = Color.White,
-    surface = GrayButtonColor,
+    onPrimary = onBackgroundText,
+    surface = GrayBg,
+    onSurface = GrayText,
+    primaryContainer = GrayButtonColor,
+    onPrimaryContainer = LightGray,
     error = ErrorRed,
-    onError = Color.White
+    onError = onBackgroundText
 )
 
 @Composable
@@ -28,6 +31,7 @@ fun MyMovieTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
+        shapes = Shapes,
         content = content
     )
 }

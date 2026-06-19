@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.CircularProgressIndicator
@@ -30,12 +31,11 @@ import com.leonardower.mymovie.common.nav.AppNavigation
 import com.leonardower.mymovie.data.local.entities.Film
 import com.leonardower.mymovie.ui.components.common.GrayButton
 import com.leonardower.mymovie.ui.components.common.WatchLaterButton
-import com.leonardower.mymovie.ui.components.item.RatingItem
+import com.leonardower.mymovie.ui.components.rating.RatingItem
 import com.leonardower.mymovie.ui.components.list.FilmList
 import com.leonardower.mymovie.ui.components.state.AddFilmEmptyState
 import com.leonardower.mymovie.ui.components.tiles.film.FilmDetail
 import com.leonardower.mymovie.ui.components.tiles.film.FilmTile
-import com.leonardower.mymovie.ui.components.tiles.film.FilmTileSize
 import com.leonardower.mymovie.ui.screens.watch_this.vm.ManagersVMFactory
 import com.leonardower.mymovie.ui.screens.watch_this.vm.WatchThisUiState
 import com.leonardower.mymovie.ui.screens.watch_this.vm.WatchThisVM
@@ -80,9 +80,9 @@ private fun WatchThisScreenContent(
     ) {
         item {
             Text(
-                modifier = Modifier.padding(horizontal = 16.dp),
+                modifier = Modifier.padding(horizontal = 12.dp),
                 text = "Что посмотреть",
-                style = MaterialTheme.typography.displayLarge,
+                style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
         }
@@ -121,15 +121,15 @@ private fun WatchThisScreenContent(
                         title = "Подборка случайных фильмов",
                         content = {
                             LazyRow(
-                                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                contentPadding = PaddingValues(horizontal = 16.dp)
+                                horizontalArrangement = Arrangement.spacedBy(2.dp),
+                                contentPadding = PaddingValues(horizontal = 4.dp)
                             ) {
                                 items(uiState.randomFilms.size) { index ->
                                     val it = uiState.randomFilms[index]
                                     FilmTile(
                                         film = it,
                                         filmGenreNames = emptyList(),
-                                        size = FilmTileSize.Big,
+                                        modifier = Modifier.width(180.dp),
                                         onClick = { viewModel.onFilmClick(it.id) }
                                     )
                                 }

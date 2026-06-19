@@ -1,4 +1,4 @@
-package com.leonardower.mymovie.ui.components.item
+package com.leonardower.mymovie.ui.components.rating
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

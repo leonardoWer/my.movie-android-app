@@ -56,9 +56,8 @@ fun GrayTextField(
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     minHeight: Dp = 42.dp,
     enabled: Boolean = true,
-    textStyle: TextStyle = MaterialTheme.typography.bodyMedium.copy(color = LightGray),
+    textStyle: TextStyle = MaterialTheme.typography.bodySmall,
     isError: Boolean = false,
-    showSuccessBorder: Boolean = false,
     errorMessage: String? = null
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -69,36 +68,13 @@ fun GrayTextField(
         onFocusChange?.invoke(isFocused)
     }
 
-    // Цвет обводки
-    val borderColor = when {
-        (isError && isFocused) -> MaterialTheme.colorScheme.error
-        (showSuccessBorder && isFocused) -> SuccessGreen
-        isFocused -> OrangePrimary
-        else -> GrayButtonColor
-    }
-
-    // Толщина обводки
-    val borderWidth = when {
-        isFocused || isError || showSuccessBorder -> 1.dp
-        else -> 0.8.dp
-    }
-
     Column(modifier = modifier) {
         Box(
             modifier = Modifier
                 .run {
-                    if (singleLine) {
-                        this.height(minHeight)
-                    } else {
-                        this.heightIn(min = minHeight)
-                    }
+                    if (singleLine) this.height(minHeight)
+                    else this.heightIn(min = minHeight)
                 }
-                .border(
-                    width = borderWidth,
-                    color = borderColor,
-                    shape = RectangleShape
-                )
-                .background(GrayButtonColor)
                 .clickable(
                     enabled = enabled,
                     interactionSource = interactionSource,
@@ -121,45 +97,41 @@ fun GrayTextField(
                 verticalAlignment = if (singleLine) Alignment.CenterVertically else Alignment.Top
             ) {
                 // Leading Icon
-                if (leadingIcon != null) {
-                    if (leadingIconState !is IconState.Invisible) {
-                        Box(
-                            modifier = Modifier.size(20.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            when (leadingIconState) {
-                                IconState.Loading -> {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier.size(16.dp),
-                                        strokeWidth = 2.dp,
-                                        color = OrangePrimary
-                                    )
-                                }
-
-                                IconState.Success -> {
-                                    Icon(
-                                        imageVector = Icons.Default.Check,
-                                        contentDescription = "Успешно",
-                                        tint = SuccessGreen,
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                }
-
-                                IconState.Error -> {
-                                    Icon(
-                                        imageVector = Icons.Default.Close,
-                                        contentDescription = "Ошибка",
-                                        tint = MaterialTheme.colorScheme.error,
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                }
-
-                                else -> {
+                if (leadingIconState !is IconState.Invisible) {
+                    Box(
+                        contentAlignment = Alignment.Center
+                    ) {
+                        when (leadingIconState) {
+                            IconState.Loading -> {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.padding(end = 8.dp).size(16.dp),
+                                    strokeWidth = 2.dp,
+                                    color = OrangePrimary
+                                )
+                            }
+                            IconState.Success -> {
+                                Icon(
+                                    imageVector = Icons.Default.Check,
+                                    contentDescription = "Успешно",
+                                    tint = SuccessGreen,
+                                    modifier = Modifier.padding(end = 8.dp).size(16.dp)
+                                )
+                            }
+                            IconState.Error -> {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = "Ошибка",
+                                    tint = MaterialTheme.colorScheme.error,
+                                    modifier = Modifier.padding(end = 8.dp).size(16.dp)
+                                )
+                            }
+                            else -> {
+                                if (leadingIcon != null) {
                                     Icon(
                                         imageVector = leadingIcon,
                                         contentDescription = null,
                                         tint = LightGray,
-                                        modifier = Modifier.size(20.dp)
+                                        modifier = Modifier.padding(end = 8.dp).size(20.dp)
                                     )
                                 }
                             }
@@ -181,12 +153,12 @@ fun GrayTextField(
                         modifier = Modifier
                             .fillMaxWidth()
                             .focusRequester(focusRequester),
-                        textStyle = MaterialTheme.typography.titleSmall.copy(
+                        textStyle = MaterialTheme.typography.bodyMedium.copy(
                             color = MaterialTheme.colorScheme.onBackground
                         ),
                         value = value,
                         onValueChange = onValueChange,
-                        cursorBrush = SolidColor(OrangePrimary),
+                        cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground),
                         keyboardOptions = keyboardOptions,
                         keyboardActions = keyboardActions,
                         singleLine = singleLine,
@@ -202,7 +174,8 @@ fun GrayTextField(
                                 if (value.isEmpty() && placeholder.isNotEmpty()) {
                                     Text(
                                         text = placeholder,
-                                        style = textStyle.copy(color = LightGray),
+                                        style = textStyle,
+                                        color = MaterialTheme.colorScheme.onSurface,
                                         maxLines = 1
                                     )
                                 }
@@ -217,7 +190,7 @@ fun GrayTextField(
                     Icon(
                         imageVector = trailingIcon,
                         contentDescription = null,
-                        tint = LightGray,
+                        tint = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier
                             .size(16.dp)
                             .clickable(

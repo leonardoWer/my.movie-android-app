@@ -7,6 +7,7 @@ import com.leonardower.mymovie.data.local.entities.FilmGenreCrossRef
 import com.leonardower.mymovie.data.local.entities.Genre
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.flow.map
 
 class FilmManager(

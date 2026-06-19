@@ -31,7 +31,6 @@ import androidx.compose.ui.unit.dp
 import com.leonardower.mymovie.common.helpers.FilmWithGenreNames
 import com.leonardower.mymovie.common.nav.AppNavigation
 import com.leonardower.mymovie.ui.components.tiles.film.FilmTile
-import com.leonardower.mymovie.ui.components.tiles.film.FilmTileSize
 import com.leonardower.mymovie.ui.screens.films_in_genre.vm.FilmsInGenreUiState
 import com.leonardower.mymovie.ui.screens.films_in_genre.vm.FilmsInGenreVM
 import com.leonardower.mymovie.ui.screens.films_in_genre.vm.FilmsInGenreVMFactory
@@ -136,11 +135,10 @@ private fun FilmsInGenreList(
                 ) {
                     FilmTile(
                         film = it.film,
-                        size = FilmTileSize.Large,
+                        modifier = Modifier.fillMaxWidth(),
                         onClick = {
                             AppNavigation.manager.navigateToFilmDetail(it.film.id)
                         },
-                        modifier = Modifier.fillMaxWidth()
                     )
                 }
             }

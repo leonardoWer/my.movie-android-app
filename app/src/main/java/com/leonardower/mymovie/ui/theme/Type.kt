@@ -8,40 +8,56 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.leonardower.mymovie.R
 
-val OpenSansFontFamily = FontFamily(
-    Font(R.font.os_extra_bold, FontWeight.ExtraBold),
-    Font(R.font.os_bold, FontWeight.Bold),
+val AkzidenzGroteskFontFamily = FontFamily(
+    Font(R.font.akzidenzgroteskpro_bold, FontWeight.Bold),
+    Font(R.font.akzidenzgroteskpro_md, FontWeight.Medium),
+    Font(R.font.akzidenzgroteskpro_regular, FontWeight.Normal),
+    Font(R.font.akzidenzgroteskpro_light, FontWeight.Light),
+)
+
+val AccentFontFamily = FontFamily(
+    Font(R.font.belarus, FontWeight.Normal),
 )
 
 val Typography = Typography(
     titleLarge = TextStyle(
-        fontFamily = OpenSansFontFamily,
+        fontFamily = AccentFontFamily,
         fontWeight = FontWeight.ExtraBold,
         fontSize = 36.sp,
     ),
-    displayLarge = TextStyle(
-        fontFamily = OpenSansFontFamily,
-        fontWeight = FontWeight.ExtraBold,
+    titleMedium = TextStyle(
+        fontFamily = AkzidenzGroteskFontFamily,
+        fontWeight = FontWeight.Bold,
         fontSize = 24.sp,
     ),
-    titleMedium = TextStyle(
-        fontFamily = OpenSansFontFamily,
+    titleSmall = TextStyle(
+        fontFamily = AkzidenzGroteskFontFamily,
         fontWeight = FontWeight.Bold,
+        fontSize = 18.sp,
+    ),
+    bodyLarge = TextStyle(
+        fontFamily = AkzidenzGroteskFontFamily,
+        fontWeight = FontWeight.Medium,
         fontSize = 16.sp,
     ),
-    titleSmall = TextStyle(
-        fontFamily = OpenSansFontFamily,
-        fontWeight = FontWeight.Bold,
+    bodyMedium = TextStyle(
+        fontFamily = AkzidenzGroteskFontFamily,
+        fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
     ),
-    bodyMedium = TextStyle(
-        fontFamily = OpenSansFontFamily,
-        fontWeight = FontWeight.Bold,
+    bodySmall = TextStyle(
+        fontFamily = AkzidenzGroteskFontFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 14.sp,
+    ),
+    labelMedium = TextStyle(
+        fontFamily = AkzidenzGroteskFontFamily,
+        fontWeight = FontWeight.Light,
         fontSize = 12.sp,
     ),
-    bodySmall = TextStyle(
-        fontFamily = OpenSansFontFamily,
-        fontWeight = FontWeight.Bold,
+    labelSmall = TextStyle(
+        fontFamily = AkzidenzGroteskFontFamily,
+        fontWeight = FontWeight.Light,
         fontSize = 11.sp,
     ),
 )

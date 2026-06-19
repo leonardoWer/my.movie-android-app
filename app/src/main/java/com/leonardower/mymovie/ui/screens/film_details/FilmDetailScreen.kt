@@ -22,7 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.leonardower.mymovie.R
 import com.leonardower.mymovie.ui.components.common.RatingButton
 import com.leonardower.mymovie.ui.components.common.WatchLaterButton
-import com.leonardower.mymovie.ui.components.dialog.RatingDialog
+import com.leonardower.mymovie.ui.components.rating.RatingDialog
 import com.leonardower.mymovie.ui.components.tiles.film.FilmDetail
 import com.leonardower.mymovie.ui.screens.film_details.vm.FilmDetailVM
 import com.leonardower.mymovie.ui.screens.film_details.vm.FilmDetailVMFactory

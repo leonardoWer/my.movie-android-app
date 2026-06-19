@@ -39,10 +39,10 @@ fun SearchBar(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(56.dp)
-            .clip(RoundedCornerShape(0.dp))
-            .background(GrayButtonColor)
-            .padding(horizontal = 16.dp),
+            .height(42.dp)
+            .clip(MaterialTheme.shapes.large)
+            .background(MaterialTheme.colorScheme.primaryContainer)
+            .padding(horizontal = 8.dp),
         contentAlignment = Alignment.CenterStart
     ) {
         Row(
@@ -52,10 +52,10 @@ fun SearchBar(
             Icon(
                 imageVector = Icons.Default.Search,
                 contentDescription = "Поиск",
-                tint = LightGray
+                tint = MaterialTheme.colorScheme.onSurface
             )
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(4.dp))
 
             BasicTextField(
                 value = inputText,
@@ -64,8 +64,8 @@ fun SearchBar(
                     onQueryChange(newValue)
                 },
                 modifier = Modifier.weight(1f),
-                textStyle = MaterialTheme.typography.bodyMedium.copy(color = LightGray),
-                cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface),
+                cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = { onSearch() }),
                 decorationBox = { innerTextField ->
@@ -76,7 +76,8 @@ fun SearchBar(
                         if (query.isEmpty()) {
                             Text(
                                 text = placeholder,
-                                style = MaterialTheme.typography.bodyMedium.copy(color = LightGray)
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         }
                         innerTextField()

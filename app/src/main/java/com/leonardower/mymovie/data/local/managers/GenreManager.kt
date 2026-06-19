@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.Flow
 class GenreManager(
     private val genreDao: GenreDao
 ) {
-    // Получение жанров
     fun getAllGenres(): Flow<List<Genre>> = genreDao.getAllGenres()
 
     fun getSystemGenres(): Flow<List<Genre>> = genreDao.getSystemGenres()

@@ -42,10 +42,9 @@ fun GrayButton(
     val currentBackgroundColor = if (isActive && enabled) activeBackgroundColor else backgroundColor
 
     Button(
-        modifier = modifier
-            .height(height),
+        modifier = modifier.height(height),
         contentPadding = contentPadding,
-        shape = RectangleShape,
+        shape = MaterialTheme.shapes.large,
         onClick = onClick,
         enabled = enabled,
         colors = ButtonDefaults.buttonColors(

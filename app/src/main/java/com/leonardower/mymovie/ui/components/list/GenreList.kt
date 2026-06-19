@@ -28,7 +28,7 @@ fun GenreList(
         item {
             Text(
                 text = stringResource(R.string.genres),
-                style = MaterialTheme.typography.displayLarge,
+                style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onBackground,
             )
         }

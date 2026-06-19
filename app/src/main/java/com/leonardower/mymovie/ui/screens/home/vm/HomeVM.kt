@@ -8,6 +8,7 @@ import com.leonardower.mymovie.data.local.entities.Film
 import com.leonardower.mymovie.data.local.entities.Genre
 import com.leonardower.mymovie.data.local.managers.FilmManager
 import com.leonardower.mymovie.data.local.managers.GenreManager
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -19,33 +20,6 @@ class HomeVM(
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    // Поток фильмов "Буду смотреть"
-    val watchLaterFilms: StateFlow<List<FilmWithGenreNames>?> = this
-        .getWatchLaterFilmsWithGenreNames()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = null
-        )
-
-    // Поток всех жанров
-    val allGenres: StateFlow<List<Genre>> = genreManager
-        .getAllGenres()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyList()
-        )
-
-    // Фильмы по жанрам
-    val filmsByGenre: StateFlow<Map<Genre, List<FilmWithGenreNames>>?> = this
-        .getFilmsGroupedByGenre()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = null
-        )
-
     init {
         loadInitialData()
     }
@@ -54,19 +28,23 @@ class HomeVM(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             try {
-                combine(
-                    watchLaterFilms.filterNotNull(),
-                    filmsByGenre.filterNotNull()
-                ) { watchLater, byGenre ->
-                    watchLater to byGenre
-                }.first()
+                // Загружаем все данные параллельно
+                val watchLaterFilmsDeferred = async { getWatchLaterFilmsWithGenreNames() }
+                val allGenresDeferred = async { genreManager.getAllGenres().first() }
+                val filmsByGenreDeferred = async { getFilmsGroupedByGenre() }
 
-                // После получения данных проверяем, есть ли фильмы
-                val hasAnyFilms = watchLaterFilms.value?.isNotEmpty() == true ||
-                        filmsByGenre.value?.values?.any { it.isNotEmpty() } == true
+                val watchLaterFilms = watchLaterFilmsDeferred.await()
+                val allGenres = allGenresDeferred.await()
+                val filmsByGenre = filmsByGenreDeferred.await()
+
+                val hasAnyFilms = watchLaterFilms.isNotEmpty() ||
+                        filmsByGenre.values.any { it.isNotEmpty() }
 
                 _uiState.update {
                     it.copy(
+                        watchLaterFilms = watchLaterFilms,
+                        allGenres = allGenres,
+                        filmsByGenre = filmsByGenre,
                         isLoading = false,
                         isEmpty = !hasAnyFilms,
                         error = null
@@ -83,32 +61,34 @@ class HomeVM(
         }
     }
 
-    private fun getFilmsGroupedByGenre(): Flow<Map<Genre, List<FilmWithGenreNames>>> {
-        return filmManager.getFilmsGroupedByGenre()
-            .map { filmsMap ->
-                filmsMap.mapValues { (_, filmList) ->
-                    getFilmsWithGenreNames(filmList)
-                }
+    private suspend fun getFilmsGroupedByGenre(): Map<Genre, List<FilmWithGenreNames>> {
+        return try {
+            val filmsMap = filmManager.getFilmsGroupedByGenre().first()
+            filmsMap.mapValues { (_, filmList) ->
+                getFilmsWithGenreNames(filmList)
             }
-            .catch { emit(emptyMap()) }
+        } catch (e: Exception) {
+            emptyMap()
+        }
     }
 
-    // Получение фильмов с названиями жанров
     private suspend fun getFilmsWithGenreNames(films: List<Film>): List<FilmWithGenreNames> {
         return films.map { film ->
             val genreNames = genreManager.getGenreNamesForFilm(film.id)
             FilmWithGenreNames(film, genreNames)
         }
     }
-    private fun getWatchLaterFilmsWithGenreNames(): Flow<List<FilmWithGenreNames>> {
-        return filmManager.getWatchLaterFilms()
-            .map { films ->
-                films.map { film ->
-                    val genreNames = genreManager.getGenreNamesForFilm(film.id)
-                    FilmWithGenreNames(film, genreNames)
-                }
+
+    private suspend fun getWatchLaterFilmsWithGenreNames(): List<FilmWithGenreNames> {
+        return try {
+            val films = filmManager.getWatchLaterFilms().first()
+            films.map { film ->
+                val genreNames = genreManager.getGenreNamesForFilm(film.id)
+                FilmWithGenreNames(film, genreNames)
             }
-            .catch { emit(emptyList()) }
+        } catch (e: Exception) {
+            emptyList()
+        }
     }
 
     fun onFilmClick(filmId: Long) {
@@ -120,9 +100,11 @@ class HomeVM(
     }
 }
 
-// Состояние экрана
 data class HomeUiState(
-    val none: Boolean = true,
+    val watchLaterFilms: List<FilmWithGenreNames> = emptyList(),
+    val allGenres: List<Genre> = emptyList(),
+    val filmsByGenre: Map<Genre, List<FilmWithGenreNames>> = emptyMap(),
+
     val isEmpty: Boolean = false,
     val isLoading: Boolean = false,
     val error: String? = null

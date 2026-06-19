@@ -25,7 +25,7 @@ class AddFilmVM(
 
     // Flow для всех жанров
     private val allGenresFlow: StateFlow<List<Genre>> = genreManager
-        .getSystemGenres() // TODO: добавить пользовательские жанры
+        .getSystemGenres()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -33,30 +33,38 @@ class AddFilmVM(
         )
 
     init {
-        // Загружаем все жанры при инициализации
         viewModelScope.launch {
             allGenresFlow.collect { genres ->
                 _uiState.update { state ->
                     state.copy(
-                        allGenres = genres,
-                        genreSuggestions = getAllGenreNames()
+                        allGenres = genres
                     )
                 }
             }
         }
 
-        // Следим за изменениями в UI для валидации
         viewModelScope.launch {
             _uiState.collect { validateForm(it) }
         }
     }
 
-    private var suggestionsJob: Job? = null
     private var validationJob: Job? = null
 
 
     fun onTitleChange(title: String) {
         _uiState.update { it.copy(title = title) }
+    }
+    fun onDescriptionChange(description: String) {
+        _uiState.update { it.copy(description = description) }
+    }
+
+    fun updateSelectedGenres(selectedGenres: List<Genre>) {
+        _uiState.update { state ->
+            state.copy(
+                selectedGenreIds = selectedGenres.map { it.id },
+                selectedGenres = selectedGenres.map { it.name }
+            )
+        }
     }
 
     fun onPosterUrlChange(url: String) {
@@ -131,125 +139,6 @@ class AddFilmVM(
 
             } catch (e: Exception) {
                 false
-            }
-        }
-    }
-
-    fun onDescriptionChange(description: String) {
-        _uiState.update { it.copy(description = description) }
-    }
-
-
-    fun onGenreInputChange(input: String) {
-        _uiState.update { state ->
-            state.copy(
-                genreInput = input,
-            )
-        }
-        updateGenreSuggestions(input)
-    }
-    fun toggleGenreSuggestionsVisibility(visibility: Boolean) {
-        _uiState.update {
-            it.copy(showGenreSuggestions = visibility)
-        }
-    }
-    private fun updateGenreSuggestions(input: String) {
-        if (input.isEmpty()) {
-            _uiState.update { it.copy(genreSuggestions = getAllGenreNames()) }
-            return
-        }
-        suggestionsJob?.cancel()
-
-        suggestionsJob = viewModelScope.launch {
-            delay(100)
-
-            val currentState = _uiState.value
-            val allGenres = currentState.allGenres
-
-            val filtered = allGenres
-                .filter { genre ->
-                    genre.name.contains(input, ignoreCase = true) &&
-                            !currentState.selectedGenres.contains(genre.name)
-                }
-                .map { it.name }
-                .distinct()
-                .take(5) // Ограничиваем количество подсказок
-
-            _uiState.update {
-                it.copy(
-                    genreSuggestions = filtered,
-                    showGenreSuggestions = filtered.isNotEmpty()
-                )
-            }
-        }
-    }
-    private fun getAllGenreNames(): List<String> {
-        return allGenresFlow.value.map {
-            it.name
-        }
-    }
-    fun onGenreSelect(genreName: String) {
-        viewModelScope.launch {
-            // Ищем жанр по имени
-            val genre = genreManager.findGenreByName(genreName)
-
-            if (genre != null) {
-                _uiState.update { state ->
-                    val updatedSelectedGenres = if (state.selectedGenreIds.contains(genre.id)) {
-                        state.selectedGenreIds
-                    } else {
-                        state.selectedGenreIds + genre.id
-                    }
-
-                    val updatedSelectedGenreNames = if (state.selectedGenres.contains(genreName)) {
-                        state.selectedGenres
-                    } else {
-                        state.selectedGenres + genreName
-                    }
-
-                    state.copy(
-                        selectedGenreIds = updatedSelectedGenres,
-                        selectedGenres = updatedSelectedGenreNames,
-                        genreInput = "",
-                        showGenreSuggestions = false
-                    )
-                }
-            } else {
-                // Если жанр не найден, создаем новый пользовательский
-                val newGenreId = genreManager.createGenre(
-                    name = genreName,
-                    type = "user",
-                    iconUrl = null
-                )
-
-                _uiState.update { state ->
-                    state.copy(
-                        selectedGenreIds = state.selectedGenreIds + newGenreId,
-                        selectedGenres = state.selectedGenres + genreName,
-                        genreInput = "",
-                        showGenreSuggestions = false
-                    )
-                }
-            }
-        }
-    }
-    fun onRemoveGenre(genreName: String) {
-        viewModelScope.launch {
-            val genre = genreManager.findGenreByName(genreName)
-
-            if (genre != null) {
-                _uiState.update { state ->
-                    state.copy(
-                        selectedGenreIds = state.selectedGenreIds.filter { it != genre.id },
-                        selectedGenres = state.selectedGenres.filter { it != genreName }
-                    )
-                }
-            } else {
-                _uiState.update { state ->
-                    state.copy(
-                        selectedGenres = state.selectedGenres.filter { it != genreName }
-                    )
-                }
             }
         }
     }
@@ -338,9 +227,6 @@ data class AddFilmUiState(
     val allGenres: List<Genre> = emptyList(),
     val selectedGenres: List<String> = emptyList(),
     val selectedGenreIds: List<Long> = emptyList(),
-    val genreInput: String = "",
-    val genreSuggestions: List<String> = emptyList(),
-    val showGenreSuggestions: Boolean = false,
 
     // Валидация
     val titleError: String? = null,

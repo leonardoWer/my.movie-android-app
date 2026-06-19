@@ -36,7 +36,7 @@ fun SplashScreen(
     val scale by animateFloatAsState(
         targetValue = if (startAnimation) 1.5f else 1.2f,
         animationSpec = tween(
-            durationMillis = 2000,
+            durationMillis = 1800,
             easing = FastOutSlowInEasing
         ),
         label = "scale_animation"
@@ -45,7 +45,7 @@ fun SplashScreen(
     LaunchedEffect(Unit) {
         delay(200)
         startAnimation = true
-        delay(2000)
+        delay(1800)
         onLoadingComplete()
     }
 

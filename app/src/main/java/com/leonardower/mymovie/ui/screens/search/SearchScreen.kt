@@ -40,7 +40,7 @@ fun SearchScreen(
             placeholder = stringResource(R.string.search_hint),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 4.dp)
         )
 
         // Контент в зависимости от состояния
@@ -55,7 +55,9 @@ fun SearchScreen(
 
             else -> {
                 GenreList(
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier
+                        .padding(horizontal = 12.dp)
+                        .padding(top = 16.dp),
                     allGenres = allGenres,
                     onGenreClick = viewModel::onGenreClick
                 )
