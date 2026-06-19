@@ -5,24 +5,21 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CircularProgressIndicator
@@ -37,7 +34,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -105,10 +101,13 @@ fun HomeScreenContent(
     onFilmClick: (Long) -> Unit = {},
     onGenreClick: (Long) -> Unit = {},
 ) {
-    LazyColumn(
-        modifier = modifier.background(MaterialTheme.colorScheme.background)
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        modifier = modifier.background(MaterialTheme.colorScheme.background),
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
+        verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        item {
+        item(span = { GridItemSpan(maxLineSpan) }) {
             Row(
                 modifier = Modifier.padding(horizontal = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -129,7 +128,7 @@ fun HomeScreenContent(
         }
 
         if (uiState.isLoading) {
-            item {
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -140,7 +139,7 @@ fun HomeScreenContent(
                 }
             }
         } else if (uiState.error != null) {
-            item {
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -155,7 +154,7 @@ fun HomeScreenContent(
                 }
             }
         } else if (uiState.isEmpty) {
-            item {
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 Box(
                     modifier = Modifier
                         .padding(vertical = 8.dp, horizontal = 16.dp)
@@ -166,44 +165,39 @@ fun HomeScreenContent(
                 }
             }
         } else {
-            item { Spacer(Modifier.height(8.dp)) }
-            item {
-                if (allGenres.isNotEmpty() && filmsByGenre?.isNotEmpty() == true) {
-                    LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        contentPadding = PaddingValues(horizontal = 12.dp)
-                    ) {
-                        items(allGenres) { genre ->
-                            GenreCard(
-                                genreData = GenreData(
-                                    genreName = genre.name,
-                                    _previewImgFileNameList = listOf(
-                                        "drama__1.png", "drama__2.png"
-                                    )
-                                ),
-                                onClick = { onGenreClick(genre.id) }
-                            )
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                Column {
+                    Spacer(Modifier.height(8.dp))
+                    if (allGenres.isNotEmpty() && filmsByGenre?.isNotEmpty() == true) {
+                        LazyRow(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            contentPadding = PaddingValues(horizontal = 12.dp)
+                        ) {
+                            items(allGenres) { genre ->
+                                GenreCard(
+                                    genreData = GenreData(
+                                        genreName = genre.name,
+                                        _previewImgFileNameList = listOf(
+                                            "drama__1.png", "drama__2.png"
+                                        )
+                                    ),
+                                    onClick = { onGenreClick(genre.id) }
+                                )
+                            }
                         }
                     }
+                    Spacer(Modifier.height(12.dp))
                 }
             }
-            item { Spacer(Modifier.height(12.dp)) }
             if (watchLaterFilms?.isNotEmpty() == true) {
-                item {
-                    FlowRow(
-                        maxItemsInEachRow = 2,
-                        horizontalArrangement = Arrangement.spacedBy(2.dp),
-                        verticalArrangement = Arrangement.spacedBy(2.dp)
-                    ) {
-                        watchLaterFilms.forEach { filmWithGenres ->
-                            FilmTile(
-                                film = filmWithGenres.film,
-                                filmGenreNames = filmWithGenres.genreNames,
-                                modifier = Modifier.weight(1f).fillMaxWidth(0.5f),
-                                onClick = { onFilmClick(filmWithGenres.film.id) }
-                            )
-                        }
-                        if (watchLaterFilms.size % 2 != 0) Box(Modifier.weight(1f))
+                watchLaterFilms.forEach { filmWithGenres ->
+                    item {
+                        FilmTile(
+                            film = filmWithGenres.film,
+                            filmGenreNames = filmWithGenres.genreNames,
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = { onFilmClick(filmWithGenres.film.id) }
+                        )
                     }
                 }
             }
@@ -211,7 +205,7 @@ fun HomeScreenContent(
             // Секции по жанрам
             filmsByGenre?.forEach { (genre, films) ->
                 if (films.isNotEmpty()) {
-                    item {
+                    item(span = { GridItemSpan(maxLineSpan) }) {
                         FilmList(
                             title = genre.name,
                             content = {

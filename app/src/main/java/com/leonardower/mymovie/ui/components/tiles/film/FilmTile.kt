@@ -37,49 +37,55 @@ fun FilmTile(
             .clip(MaterialTheme.shapes.medium)
             .clickable { onClick() }
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.8f))
-        ) {
-            ImgFromUrl(
-                imgUrl = film.posterUrl,
-                contentDescription = film.title,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
+        Column {
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.8f))
+            ) {
+                ImgFromUrl(
+                    imgUrl = film.posterUrl,
+                    contentDescription = film.title,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
 
-            film.userRating?.let { rating ->
-                Box(Modifier.padding(4.dp)) {
-                    RatingItem(rating)
+                film.userRating?.let { rating ->
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(4.dp)
+                    ) {
+                        RatingItem(rating)
+                    }
                 }
             }
-        }
 
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(vertical = 8.dp, horizontal = 8.dp)
-        ) {
-            // Название
-            Text(
-                text = film.title,
-                style = MaterialTheme.typography.bodyMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            // Жанры
-            if (filmGenreNames.isNotEmpty()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(vertical = 8.dp, horizontal = 8.dp)
+            ) {
+                // Название
                 Text(
-                    text = filmGenreNames.joinToString(", ") { it },
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    text = film.title,
+                    style = MaterialTheme.typography.bodyMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
+
+                // Жанры
+                if (filmGenreNames.isNotEmpty()) {
+                    Text(
+                        text = filmGenreNames.joinToString(", ") { it },
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
         }
     }
