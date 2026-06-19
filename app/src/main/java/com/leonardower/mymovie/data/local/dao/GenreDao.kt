@@ -45,6 +45,13 @@ interface GenreDao {
     @Query("DELETE FROM film_genre_cross_ref WHERE filmId = :filmId")
     suspend fun deleteAllGenresForFilm(filmId: Long)
 
+    @Query("""
+        SELECT g.* FROM genres g
+        INNER JOIN film_genre_cross_ref fg ON g.id = fg.genreId
+        WHERE fg.filmId = :filmId
+    """)
+    suspend fun getGenresForFilm(filmId: Long): List<Genre>
+
     @Query("SELECT genreId FROM film_genre_cross_ref WHERE filmId = :filmId")
     suspend fun getGenreIdsForFilm(filmId: Long): List<Long>
 }

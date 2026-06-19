@@ -23,7 +23,8 @@ class AddFilmVM(
     private val _uiState = MutableStateFlow(AddFilmUiState())
     val uiState: StateFlow<AddFilmUiState> = _uiState.asStateFlow()
 
-    // Flow для всех жанров
+    private var isEditMode: Boolean = false
+
     private val allGenresFlow: StateFlow<List<Genre>> = genreManager
         .getSystemGenres()
         .stateIn(
@@ -47,9 +48,57 @@ class AddFilmVM(
             _uiState.collect { validateForm(it) }
         }
     }
-
     private var validationJob: Job? = null
 
+    fun loadFilm(filmId: Long?) {
+        isEditMode = filmId != null && filmId != -1L
+        if (isEditMode)
+            loadFilmData(filmId)
+    }
+
+    private fun loadFilmData(filmId: Long?) {
+        viewModelScope.launch {
+            try {
+                val film = filmManager.getFilmById(filmId!!).first()
+
+                if (film != null) {
+                    // Получаем жанры фильма
+                    val filmGenres = genreManager.getGenresForFilm(film.id)
+
+                    _uiState.update { state ->
+                        state.copy(
+                            title = film.title,
+                            posterUrl = film.posterUrl,
+                            description = film.description ?: "",
+                            rating = film.userRating,
+                            isRated = film.userRating != null && film.userRating != 0,
+                            isInWatchLater = film.isWatchLater,
+                            selectedGenreIds = filmGenres.map { it.id },
+                            selectedGenres = filmGenres.map { it.name },
+                            originalFilm = film
+                        )
+                    }
+
+                    // Если есть URL постера - валидируем его
+                    if (film.posterUrl.isNotEmpty()) {
+                        onPosterUrlChange(film.posterUrl)
+                    }
+                } else {
+                    _uiState.update {
+                        it.copy(
+                            error = "Фильм не найден"
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(
+                        error = "Ошибка загрузки фильма: ${e.message}"
+                    )
+                }
+            }
+        }
+    }
 
     fun onTitleChange(title: String) {
         _uiState.update { it.copy(title = title) }
@@ -166,26 +215,50 @@ class AddFilmVM(
                 _uiState.update { it.copy(isSaving = true) }
 
                 val currentState = _uiState.value
+                val now = System.currentTimeMillis()
 
-                // Создаем фильм
-                val film = Film(
-                    title = currentState.title,
-                    posterUrl = currentState.posterUrl,
-                    description = currentState.description,
-                    userRating = currentState.rating,
-                    isWatchLater = currentState.isInWatchLater,
-                    isViewed = !currentState.isInWatchLater,
-                    createdAt = System.currentTimeMillis(),
-                    updatedAt = System.currentTimeMillis()
-                )
+                if (isEditMode && currentState.originalFilm != null) {
+                    // Режим редактирования - обновляем существующий фильм
+                    val updatedFilm = currentState.originalFilm.copy(
+                        title = currentState.title,
+                        posterUrl = currentState.posterUrl,
+                        description = currentState.description.ifEmpty { null },
+                        userRating = currentState.rating,
+                        isWatchLater = currentState.isInWatchLater,
+                        isViewed = !currentState.isInWatchLater,
+                        updatedAt = now
+                    )
 
-                // Сохраняем фильм с выбранными жанрами
-                filmManager.addFilm(
-                    film = film,
-                    genreIds = currentState.selectedGenreIds
-                )
+                    filmManager.updateFilm(
+                        film = updatedFilm,
+                        genreIds = currentState.selectedGenreIds
+                    )
+                } else {
+                    // Режим создания - добавляем новый фильм
+                    val film = Film(
+                        title = currentState.title,
+                        posterUrl = currentState.posterUrl,
+                        description = currentState.description.ifEmpty { null },
+                        userRating = currentState.rating,
+                        isWatchLater = currentState.isInWatchLater,
+                        isViewed = !currentState.isInWatchLater,
+                        createdAt = now,
+                        updatedAt = now
+                    )
 
-                _uiState.update { it.copy(isSaving = false, saveSuccess = true) }
+                    filmManager.addFilm(
+                        film = film,
+                        genreIds = currentState.selectedGenreIds
+                    )
+                }
+
+                _uiState.update {
+                    it.copy(
+                        isSaving = false,
+                        saveSuccess = true,
+                        error = null
+                    )
+                }
                 onSuccess()
             } catch (e: Exception) {
                 _uiState.update {
@@ -216,6 +289,8 @@ class AddFilmVM(
 }
 
 data class AddFilmUiState(
+    val originalFilm: Film? = null,
+
     val title: String = "",
     val posterUrl: String = "",
     val description: String = "",

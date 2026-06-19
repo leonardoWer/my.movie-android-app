@@ -15,7 +15,9 @@ class GenreManager(
 
     suspend fun findGenreByName(name: String): Genre? = genreDao.findGenreByName(name)
 
-    // Получить айди жанров по фильму
+    suspend fun getGenresForFilm(filmId: Long): List<Genre> {
+        return genreDao.getGenresForFilm(filmId)
+    }
     suspend fun getGenreIdsForFilm(filmId: Long): List<Long> {
         return genreDao.getGenreIdsForFilm(filmId)
     }

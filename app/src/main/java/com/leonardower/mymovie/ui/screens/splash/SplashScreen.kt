@@ -52,7 +52,7 @@ fun SplashScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(DarkBg),
+            .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -74,6 +74,7 @@ fun SplashScreen(
                 text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.titleLarge,
                 textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
     }

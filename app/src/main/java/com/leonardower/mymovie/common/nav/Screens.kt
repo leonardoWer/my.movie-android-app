@@ -19,5 +19,14 @@ sealed class Screen(val route: String) {
             navArgument("filmId") { type = NavType.LongType }
         )
     }
-    data object AddFilm : Screen("addFilm")
+    data object AddFilm : Screen("addFilm/{filmId}") {
+        fun createRoute(filmId: Long? = null) = if (filmId != null)
+            "addFilm/$filmId" else "addFilm/-1L"
+        val arguments = listOf(
+            navArgument("filmId") {
+                type = NavType.LongType
+                defaultValue = -1L
+            }
+        )
+    }
 }

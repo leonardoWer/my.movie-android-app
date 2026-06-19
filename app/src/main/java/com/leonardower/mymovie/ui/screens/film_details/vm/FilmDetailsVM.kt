@@ -29,9 +29,7 @@ class FilmDetailVM(
 
     private val _filmGenreNamesFlow: StateFlow<List<String>> = genreManager.getAllGenres()
         .map { allGenres ->
-            val genreIds = runBlocking {
-                genreManager.getGenreIdsForFilm(filmId)
-            }
+            val genreIds = genreManager.getGenreIdsForFilm(filmId)
             genreIds.mapNotNull { id ->
                 allGenres.find { it.id == id }?.name
             }

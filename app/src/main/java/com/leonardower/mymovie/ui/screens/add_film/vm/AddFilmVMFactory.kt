@@ -8,8 +8,7 @@ import com.leonardower.mymovie.App
 object AddFilmViewModelFactory {
     val factory = viewModelFactory {
         initializer {
-            val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]
-                    as App)
+            val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as App)
             AddFilmVM(
                 filmManager = application.appModule.filmManager,
                 genreManager = application.appModule.genreManager

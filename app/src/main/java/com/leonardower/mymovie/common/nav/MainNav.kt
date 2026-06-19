@@ -64,12 +64,18 @@ fun MainNav(
             val filmId = backStackEntry.arguments?.getLong("filmId") ?: 0L
             FilmDetailScreen(
                 filmId = filmId,
-                onBackClick = { AppNavigation.manager.navigateBack() }
+                onBackClick = { AppNavigation.manager.navigateBack() },
+                onEditClick = { AppNavigation.manager.navigateToEditFilm(filmId) }
             )
         }
 
-        composable(Screen.AddFilm.route) {
+        composable(
+            route = Screen.AddFilm.route,
+            arguments = Screen.AddFilm.arguments
+        ) { backStackEntry ->
+            val filmId = backStackEntry.arguments?.getLong("filmId")
             AddFilmScreen(
+                filmId = filmId,
                 onBackClick = { AppNavigation.manager.navigateBack() },
                 onSaveSuccess = { AppNavigation.manager.navigateToHome() }
             )

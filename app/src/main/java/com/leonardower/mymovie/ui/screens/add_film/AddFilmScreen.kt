@@ -14,6 +14,7 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,6 +41,7 @@ import com.leonardower.mymovie.ui.screens.add_film.vm.PosterState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddFilmScreen(
+    filmId: Long? = null,
     onBackClick: () -> Unit,
     onSaveSuccess: () -> Unit,
     viewModel: AddFilmVM = viewModel(
@@ -47,6 +49,10 @@ fun AddFilmScreen(
     )
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.loadFilm(filmId)
+    }
 
     Scaffold(
         topBar = {

@@ -6,6 +6,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -33,6 +34,7 @@ import com.leonardower.mymovie.ui.theme.LightGray
 fun FilmDetailScreen(
     filmId: Long,
     onBackClick: () -> Unit,
+    onEditClick: () -> Unit,
     viewModel: FilmDetailVM = viewModel(
         factory = FilmDetailVMFactory.create(filmId)
     )
@@ -40,7 +42,8 @@ fun FilmDetailScreen(
     Scaffold(
         topBar = {
             FilmDetailTopAppBar(
-                onBackClick = onBackClick
+                onBackClick = onBackClick,
+                onEditClick = onEditClick,
             )
         },
     ) { pv ->
@@ -52,7 +55,8 @@ fun FilmDetailScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FilmDetailTopAppBar(
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onEditClick: () -> Unit,
 ) {
     TopAppBar(
         title = { },
@@ -61,7 +65,16 @@ private fun FilmDetailTopAppBar(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.go_back),
-                    tint = Color.White
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
+            }
+        },
+        actions = {
+            IconButton(onClick = onEditClick) {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription ="Редактировать",
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             }
         },
