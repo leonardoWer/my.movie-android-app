@@ -116,8 +116,8 @@ private fun FilmDetailContent(
                 // Название фильма
                 Text(
                     text = film?.title ?: "Без названия",
-                    style = MaterialTheme.typography.displayLarge,
-                    color = Color.White,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )

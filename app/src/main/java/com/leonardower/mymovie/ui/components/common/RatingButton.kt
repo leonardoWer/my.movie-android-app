@@ -1,6 +1,7 @@
 package com.leonardower.mymovie.ui.components.common
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,8 +39,8 @@ fun RatingButton(
         backgroundColor = backgroundColor,
         activeBackgroundColor = backgroundColor,
         iconResourceId = iconResId,
-        iconTint = if (isRated) OrangePrimary else LightGray,
-        textColor = LightGray,
+        iconTint = if (isRated) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+        textColor = MaterialTheme.colorScheme.onSurface,
         isActive = isRated,
         enabled = enabled
     )

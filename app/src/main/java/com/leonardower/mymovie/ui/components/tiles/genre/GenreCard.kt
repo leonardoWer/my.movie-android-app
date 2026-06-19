@@ -31,7 +31,7 @@ fun GenreCard(
 
     Box(
         modifier = Modifier
-            .size(90.dp)
+            .size(100.dp)
             .clip(MaterialTheme.shapes.medium)
             .background(MaterialTheme.colorScheme.primaryContainer)
             .border(
@@ -55,7 +55,7 @@ fun GenreCard(
             pathFromAssets = pathFromAssets,
             modifier = Modifier
                 .align(Alignment.BottomStart)
-                .size(70.dp)
+                .size(80.dp)
                 .offset(y = 5.dp, x = -(10).dp)
                 .rotate(-7f)
                 .clip(MaterialTheme.shapes.small)
@@ -66,7 +66,7 @@ fun GenreCard(
             pathFromAssets = pathFromAssets,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .size(70.dp)
+                .size(80.dp)
                 .offset(y = 12.dp, x = 10.dp)
                 .rotate(-10f)
                 .clip(MaterialTheme.shapes.small)

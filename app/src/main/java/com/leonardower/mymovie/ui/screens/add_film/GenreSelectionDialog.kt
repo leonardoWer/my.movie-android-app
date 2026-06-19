@@ -36,10 +36,15 @@ fun GenreSelectionBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         containerColor = MaterialTheme.colorScheme.background,
-        contentColor = MaterialTheme.colorScheme.onBackground
+        contentColor = MaterialTheme.colorScheme.onBackground,
+        sheetState = rememberModalBottomSheetState(
+            skipPartiallyExpanded = true
+        )
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding(),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Row(
@@ -61,7 +66,7 @@ fun GenreSelectionBottomSheet(
                 ) {
                     Text(
                         text = "Выбрать ${tempSelectedGenres.size}",
-                        style = MaterialTheme.typography.labelSmall
+                        style = MaterialTheme.typography.bodySmall
                     )
                 }
             }
@@ -99,7 +104,7 @@ private fun GenreSelectionItem(
 ) {
     Box(
         modifier = Modifier
-            .size(90.dp)
+            .size(100.dp)
             .clickable { onToggle() }
     ) {
         GenreCard(

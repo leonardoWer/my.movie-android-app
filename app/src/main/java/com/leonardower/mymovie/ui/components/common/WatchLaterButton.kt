@@ -1,6 +1,7 @@
 package com.leonardower.mymovie.ui.components.common
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,8 +34,8 @@ fun WatchLaterButton(
         backgroundColor = backgroundColor,
         activeBackgroundColor = backgroundColor,
         iconResourceId = iconResId,
-        iconTint = if (isInWatchLater) OrangePrimary else LightGray,
-        textColor = LightGray,
+        iconTint = if (isInWatchLater) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+        textColor = MaterialTheme.colorScheme.onSurface,
         isActive = isInWatchLater,
         enabled = enabled
     )
